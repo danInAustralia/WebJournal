@@ -1,0 +1,124 @@
+﻿body {
+    padding-top: 130px;
+    padding-bottom: 20px;
+}
+
+.navbar-inverse {
+    background-image: url('https://islamicevents.sg/blog/wp-content/uploads/2013/02/military-wallpapers-428-desktopgallery-windows-7-sky-and-river-relax-desktop-images.jpg');
+    background-position-y: 10233px;
+    background-color: white;
+    border-color: #080808;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: white;
+}
+
+.navbar-inverse .navbar-brand {
+    color: white;
+}
+
+nav a {
+    color: #00547b;
+    text-decoration: none;
+}
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+#logo a {
+    float: left;
+    background: url(/images/logo.png) no-repeat 0 0;
+    width: 255px;
+    height: 80px;
+    display: block;
+    background-size: contain;
+    text-indent: -1000em;
+    line-height: 1000em;
+    overflow: hidden;
+}
+
+.navbar {
+    min-height: 150px;
+}
+
+.container {
+    width: 90%;
+}
+
+.container .enquire_btn {
+    float: right;
+    margin-top: 30px;
+    margin-right: 0px;
+}
+.enquire_btn a {
+    color: white;
+    -moz-box-shadow: 0px 1px 3px #888888;
+    -webkit-box-shadow: 0px 1px 3px #888888;
+    box-shadow: 0px 1px 3px #888888;
+}
+
+.enquire_btn a {
+    font-family: 'Jura', sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.enquire_btn a {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background: url(/images/buttonbg.jpg) repeat-x top left;
+    padding: 15px 20px;
+}
+
+h1 {
+    font-family: 'Jura' !important;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 32px;
+    /*text-transform: uppercase;*/
+    color: #24728c;
+}
+
+.wrapper {
+    width: 85%;
+    margin: 0 auto;
+    position: relative;
+}
+
+h1 .wrapper {
+    width: 85%;
+}
+
+h1 .arrow {
+    position: absolute;
+    bottom: -37px;
+    left: 40px;
+    width: 31px;
+    height: 15px;
+    background: lavender;/*transparent url(/images/arrow.png) top center;*/
+    z-index: 100;
+}
+
+h1 {
+    padding: 12px 0;
+    background: lavender/*#e5ebed url(/images/pagetitlebg.jpg) repeat-x top center;*/
+}

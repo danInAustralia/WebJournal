@@ -1,0 +1,88 @@
+﻿@model string
+@{
+    ViewBag.Title = "Album Details";
+}
+
+
+<div ng-controller="AlbumViewController" ng-init="init('@Model.Replace("'","%27")')">
+    <h1>
+        <div class="wrapper">
+            {{album.Name}}
+            <div class="arrow"></div>
+        </div>
+    </h1>
+
+    <div style="width:99%; background-color:white">
+        <p>{{album.Description}}</p>
+        <md-autocomplete ng-disabled="false"
+                            md-no-cache="true"
+                            md-selected-item="selectedOption"
+                            md-search-text="searchText"
+                            md-items="item in options"
+                            md-item-text="item.Key"
+                            md-min-length="0"
+                            placeholder="Search query?">
+            <md-item-template>
+                <span md-highlight-text="searchText" md-highlight-flags="^i">{{item.Value}}</span>
+            </md-item-template>
+            <md-not-found>
+                No matches for "{{searchText}}" were found.
+            </md-not-found>
+        </md-autocomplete>
+
+        <div>
+            <ul uib-pagination total-items="Total" ng-model="CurrentPage" items-per-page="itemsPerPage" ng-change="pageChanged()"></ul>
+        </div>
+
+        <div style="clear: left"></div>
+
+        <a href="ResourceUploader?albumName={{album.Name}}">
+            <button type="button" class="btn btn-success">Add files to this album</button>
+        </a>
+
+        <div style="clear: left"></div>
+
+        @*<div class="photo thumbnail" style="width: 20%; height: 150px; float: left; padding: 3px">
+            <video style="height:100%" controls>
+                <source src="/api/Resources/2741cbfff1efd44ec5ea77684cc6c893" type="video/mp4">
+            </video>
+        </div>*@
+
+        @*<a href="resource/{{resource.Md5}}">{{resource.OriginalFileName}}</a>*@
+        <div ng-repeat="resource in resources"  style="width: 20%; height: 200px; float: left; padding: 3px" ng-click="showResourcePopup(resource)">
+            <div class="photo thumbnail">
+
+                <img style="height:100%" src="/api/Resources/GetThumbnailRepresentation/{{resource.Md5}}" />
+                <!--instead of showing the video here, an image still will be shown, with ability for user to click and start playback-->
+                @*<video style="height:100%" controls ng-if="resource.OriginalFileName.toLowerCase().indexOf('.mov')>=0">
+                    <source src="/api/Resources/{{resource.Md5}}" type="video/mp4">
+                </video>*@
+            </div>
+            <div dx-tag-box="tagOptions"></div>
+            <button class="btn btn-success" ng-click="downloadResource(resource.Md5, resource.OriginalFileName)">Download</button>
+        </div>
+
+
+        <div style="clear: left"></div>
+        <div>
+            <ul uib-pagination total-items="Total" ng-model="CurrentPage" items-per-page="itemsPerPage" ng-change="pageChanged()"></ul>
+        </div>
+        @*<pagination total-items="Total" ng-model="CurrentPage" items-per-page="itemsPerPage" ng-change="pageChanged()"></pagination>*@
+        <!--<ul uib-pagination total-items="Total" num-pages="5" items-per-page="$parent.filters.selections.CountPerPage" ng-model="$parent.filters.selections.PageNumber" max-size="5" class="pagination-sm" boundary-links="true" rotate="false"></ul>-->
+        <p ng-if="(CurrentPage)*(itemsPerPage)<=Total">Showing {{(CurrentPage - 1)*itemsPerPage + 1}} - {{(CurrentPage)*(itemsPerPage)}} of {{Total}}</p>
+        <p ng-if="(CurrentPage)*(itemsPerPage)>Total">Showing {{(CurrentPage - 1)*itemsPerPage + 1}} - {{Total}} of {{Total}}</p>
+
+
+
+
+    </div>
+    <div class="popup"
+         dx-popup="popupOptions">
+        <p>Test popup</p>
+        <img style="height:95%" ng-src="/api/Resources/Get/{{GetSelectedResource()}}" ng-if="!IsSelectedResourceAVideo()" />
+        <video style="height:95%" controls ng-if="IsSelectedResourceAVideo()">
+            <source ng-src="/api/Resources/Get/{{GetSelectedResource()}}" type="video/mp4">
+        </video>
+</div>
+</div>
+

@@ -1,0 +1,50 @@
+﻿
+<!--<div class="jumbotron">
+    <h1>Your Journal</h1>
+    <p class="lead">Welcome to your Journal. This is a place where you can document and diarise your life's memories.</p>
+    <p>
+        If you do not yet have a login, please click on the 'contact us' button above to open dialog.
+    </p>
+    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>-->
+<h1>
+    <div class="wrapper">
+        Your Journal
+        <!--<div class="arrow"></div>-->
+    </div>
+</h1>
+
+<div class="contentbody">
+    <div class="wrapper lightsidecol">
+        <div id="maincol">
+            <p class="lead">
+                Welcome to your Journal. This is a place where you can document and diarise your life's memories.
+            </p>
+            <p>
+                If you do not yet have a login, please click on the 'contact us' button above to open dialog.
+            </p>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Create a photo album</h2>
+                <p>
+                    Put all your holiday snaps in one safe, secure album.
+                </p>
+                <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+            </div>
+            <div class="col-md-4">
+                <h2>Upload photos</h2>
+                <p>Uploaded resources are stored securely in the Amazon cloud. Don't wait for your external USB drive to fail!</p>
+                <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+            </div>
+            <div class="col-md-4">
+                <h2>Share with friends</h2>
+                <p>Share a slideshow of the little one, your holiday, or anything else with your family and friends.</p>
+                <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+            </div>
+        </div>
+
+    </div>
+</div>
