@@ -28,7 +28,6 @@ namespace Repository.Mapping
             HasManyToMany<ResourceModel.User>(x => x.Owners).Table("ResourceOwner")
                 .ParentKeyColumn("ResourceID")
                 .ChildKeyColumn("OwnerID")
-                .FetchType.Join()
                 .Not.LazyLoad();
         }
     }

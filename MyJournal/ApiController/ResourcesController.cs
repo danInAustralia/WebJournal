@@ -272,6 +272,7 @@ namespace MyJournal.ApiController
         /// <summary>
         /// Uploads a resource 
         /// </summary>
+        [Authorize]
         [HttpPut]
         public IHttpActionResult Upload()
         {

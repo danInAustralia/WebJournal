@@ -109,7 +109,7 @@
             }
             //add resource to album
             if (item.uploadStatus === 'Success') {
-                albumProvider.addToAlbum($scope.album_name, response.Md5, function (added) {
+                albumProvider.addToAlbum($scope.albumID, response.Md5, function (added) {
                     if (added) {
                         item.uploadStatus = 'Success: added to album';
                         $scope.uploadStatus[item.file.name] = 'Success: added to album';

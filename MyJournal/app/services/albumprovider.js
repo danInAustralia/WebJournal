@@ -1,13 +1,17 @@
 ﻿//(function () {
 angular.module('Journal.AlbumProvider', [])
-    .service('albumProvider', ['$http', 'FileUploader', function albumProvider($http, FileUploader) {
+    .service('albumProvider', ['$http', 'FileUploader', 'localStorageService', function albumProvider($http, FileUploader, localStorageService) {
 
         this.getUploader = function (album_name, scope) {
             // create a uploader with options
+            var authData = localStorageService.get('authorizationData');
             var uploader = new FileUploader({
                 scope: scope,
                 method: "PUT",
-                url: "/api/resources/Upload"
+                url: "/api/resources/Upload",
+                headers: {
+                    Authorization: 'Bearer ' + authData.token
+                }
             });
             return uploader;
         };

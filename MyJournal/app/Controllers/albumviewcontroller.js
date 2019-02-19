@@ -81,7 +81,8 @@
 
         $scope.IsSelectedResourceAVideo = function()
         {
-            var isVideo = $scope.selectedResource.OriginalFileName.toLowerCase().indexOf('.mov') >= 0;
+            var originalFileName = $scope.selectedResource.OriginalFileName.toLowerCase();
+            var isVideo = originalFileName.indexOf('.mov') >= 0 || originalFileName.indexOf('.mp4') >= 0 || originalFileName.indexOf('.avi');
             return isVideo;
         }
 

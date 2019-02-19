@@ -37,6 +37,7 @@ namespace MyJournal.ApiControllers
             return vm;
         }
 
+        [Authorize]
         public async Task<Album> PostAlbum(Album album)
         {
             //add to the database
@@ -104,6 +105,7 @@ namespace MyJournal.ApiControllers
         /// assertion that the resourceID and albumID exist
         /// </summary>
         /// <param name="albumID"></param>
+        [Authorize]
         [HttpPost]
         public bool AddResource(int albumID, string resourceID)
         {
