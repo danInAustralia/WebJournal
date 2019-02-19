@@ -126,10 +126,10 @@ namespace Repository
             {
                 using (session.BeginTransaction())
                 {
-                        //session.CreateCriteria(typeof(DigitalResource)).ToList();
-                    resource = session.QueryOver<DigitalResource>()
-                                    .Where(x => x.Md5 == id && x.Owners.Contains(user))
-                                    .List().FirstOrDefault();
+                    //session.CreateCriteria(typeof(DigitalResource)).ToList();
+                    resource = (from res in session.Query<DigitalResource>()
+                               where id == res.Md5 && res.Owners.Any(x => user.UserName == x.UserName)
+                               select res).FirstOrDefault();
 
                     if (resource != null)
                     {
