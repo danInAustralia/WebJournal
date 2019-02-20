@@ -70,8 +70,8 @@
              dx-popup="popupOptions">
             <p>Test popup</p>
             <img style="height:95%" http-src="/api/Resources/Get/{{GetSelectedResource()}}" ng-if="!IsSelectedResourceAVideo()" />
-            <video style="height:95%" controls ng-if="IsSelectedResourceAVideo()">
-                <source http-src="/api/Resources/Get/{{GetSelectedResource()}}" type="video/mp4">
+            <video id="embeddedPlayer" style="height:95%" controls ng-if="IsSelectedResourceAVideo()">
+                <source ng-src="/api/Resources/Get/{{GetSelectedResource()}}?access_token={{token}}" type="video/mp4">
             </video>
         </div>
     </div>

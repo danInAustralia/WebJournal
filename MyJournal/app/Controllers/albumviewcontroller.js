@@ -1,9 +1,12 @@
 ﻿angular.module('Journal.AlbumViewController', [])
-    .controller('AlbumViewController', ['$scope', '$routeParams', 'albumProvider', '$location', '$http', 
-        function ($scope, $routeParams, albumProvider, $location, $http) {
+    .controller('AlbumViewController', ['$scope', '$routeParams', 'albumProvider', '$location', '$http', 'localStorageService',
+        function ($scope, $routeParams, albumProvider, $location, $http, localStorageService) {
             $scope.Total = 0;
             $scope.itemsPerPage = 20;
             $scope.CurrentPage = 1;
+
+            var authData = localStorageService.get('authorizationData');
+            $scope.token = authData.token;
 
             albumProvider.getAlbum($routeParams.id, function (err, album) {
                 if (err) {
@@ -82,7 +85,8 @@
         $scope.IsSelectedResourceAVideo = function()
         {
             var originalFileName = $scope.selectedResource.OriginalFileName.toLowerCase();
-            var isVideo = originalFileName.indexOf('.mov') >= 0 || originalFileName.indexOf('.mp4') >= 0 || originalFileName.indexOf('.avi');
+            var index = originalFileName.indexOf('.mov') >= 0 || originalFileName.indexOf('.mp4') >= 0 || originalFileName.indexOf('.avi');
+            var isVideo = index > 0;
             return isVideo;
         }
 
@@ -104,5 +108,23 @@
 
                 });
         }
+
+        //$scope.$on('vjsVideoReady', function (e, data) {
+        //    //Here your view content is fully loaded !!
+
+        //    var player = videojs('embeddedPlayer');
+        //    var _beforeRequest = videojs.Hls.xhr.beforeRequest;
+        //    videojs.Hls.xhr.beforeRequest = function (options) {
+        //        if (_.isFunction(_beforeRequest)) {
+        //            options = _beforeRequest(options);
+        //        }
+        //        var authData = localStorageService.get('authorizationData');
+        //        if (authData.token) {
+        //            options.headers = options.headers || {};
+        //            options.headers.Authorization = 'Bearer ' + authData.token;
+        //        }
+        //        return options;
+        //    };
+        //});
         
     }]);

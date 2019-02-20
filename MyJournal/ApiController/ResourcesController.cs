@@ -41,7 +41,7 @@ namespace MyJournal.ApiController
         //    string base64String = Convert.ToBase64String(bytes);
         //    return base64String;
         //}
-
+        [Authorize]
         public async Task<HttpResponseMessage> Get(string id)
         {
             bool isPartial = false;
@@ -56,6 +56,9 @@ namespace MyJournal.ApiController
             // Create a client
             AmazonS3Client client = new AmazonS3Client();
 
+            long from = 0;
+            long to = 0;
+
             GetObjectRequest request = null;
             if (Request.Headers.Range != null)
             {
@@ -65,7 +68,6 @@ namespace MyJournal.ApiController
                 //*-The final 500 bytes(byte offsets 9500 - 9999, inclusive):
                 //    bytes = -500
                 //  - Or bytes = 9500 -
-                long from = 0;
                 if(Request.Headers.Range.Ranges.First().From == null)
                 {
                     from = (resource.Size - 1) - (long)Request.Headers.Range.Ranges.First().To;
@@ -75,7 +77,7 @@ namespace MyJournal.ApiController
                     from = (long)Request.Headers.Range.Ranges.First().From;
                 }
                 
-                long to = resource.Size - 1;
+                to = resource.Size - 1;
                 if (Request.Headers.Range.Ranges.First().To != null)
                 {
                     to = (long)Request.Headers.Range.Ranges.First().To;
@@ -102,15 +104,22 @@ namespace MyJournal.ApiController
                     Key = id
                 };
             }
-                    // Issue request and remember to dispose of the response
-                    //using 
+            // Issue request and remember to dispose of the response
+            //using 
             GetObjectResponse response = client.GetObject(request);
             HttpStatusCode status = isPartial ? HttpStatusCode.PartialContent : HttpStatusCode.OK;
             HttpResponseMessage result = new HttpResponseMessage(status);
+
             result.Content = new StreamContent(response.ResponseStream);
+            string contentType = response.Headers["Content-Type"];
             result.Content.Headers.ContentLength = resource.Size;
+            if (isPartial)
+            {
+                result.Content.Headers.ContentLength = to - from + 1;//resource.Size;
+                result.Content.Headers.ContentRange = new ContentRangeHeaderValue(from, to, resource.Size);
+            }
             result.Content.Headers.ContentType =
-                new MediaTypeHeaderValue("application/octet-stream");
+                new MediaTypeHeaderValue(contentType);//contentType);
             return result;
 
         }
@@ -123,6 +132,7 @@ namespace MyJournal.ApiController
         /// <param name="id"></param>
         /// <param name="thumbnailHeight"></param>
         /// <returns></returns>
+        [Authorize]
         public HttpResponseMessage GetThumbnailRepresentation(string id)
         {
             UserRepository ur = new UserRepository();

@@ -91,7 +91,15 @@ namespace MyJournal
 
             // Token Generation
             app.UseOAuthAuthorizationServer(OAuthServerOptions);
-            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+            //app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+
+            //app.UseOAuthBearerTokens(OAuthServerOptions);
+
+            // Enable the application to retrieve tokens from query string to authenticate users
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions()
+            {
+                Provider = new QueryStringOAuthBearerProvider()
+            });
 
         }
     }

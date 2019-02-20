@@ -258,6 +258,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
+    <Compile Include="QueryStringOAuthBearerProvider.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AlbumListViewModel.cs" />
     <Compile Include="ViewModels\AlbumViewModel.cs" />
@@ -1201,6 +1202,7 @@
     <Content Include="Scripts\vectormap-utils\dx.vectormaputils.debug.js" />
     <Content Include="Scripts\vectormap-utils\dx.vectormaputils.js" />
     <Content Include="Scripts\vectormap-utils\dx.vectormaputils.node.js" />
+    <Content Include="Scripts\vjs-video\vjs-video.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="sqlscripts\SchemaScripts.sql" />
     <Content Include="Web.config">

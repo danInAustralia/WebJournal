@@ -14,7 +14,10 @@
     "ngRoute", 
     "ui.bootstrap", 
     "dx",
-    "angular-loading-bar"]);
+    "angular-loading-bar",
+    "vjs.video"]);
+
+
 
 photoApp.filter("pluralise", function () {
     return function (count, nouns) {
@@ -62,6 +65,22 @@ photoApp.config(["$httpProvider", function ($httpProvider) {
         return responseData;
     });
 }]);
+
+//photoApp.run(["localStorageService", function (localStorageService) {
+
+//    var _beforeRequest = videojs.Hls.xhr.beforeRequest;
+//    videojs.Hls.xhr.beforeRequest = function (options) {
+//        if (_.isFunction(_beforeRequest)) {
+//            options = _beforeRequest(options);
+//        }
+//        var authData = localStorageService.get('authorizationData');
+//        if (authData.token) {
+//            options.headers = options.headers || {};
+//            options.headers.Authorization = 'Bearer ' + authData.token;
+//        }
+//        return options;
+//    };
+//}]);
 
 angular.module('app').config(function ($mdDateLocaleProvider) {
     $mdDateLocaleProvider.formatDate = function (date) {
