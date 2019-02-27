@@ -16,11 +16,15 @@ namespace Repository
 
         //int AddTagToResource(ResourceModel.Resource resource, Tag tag);
 
-        int AddToAlbum(String albumName, ResourceModel.DigitalResource resource);
+        int AddToAlbum(int id, ResourceModel.DigitalResource resource);
 
         void AddAlbum(Album album);
 
         List<Album> GetAlbums(Func<Album, bool> predicate);
         Album GetAlbum(int id, string userName);
+
+        bool Exists(string md5);
+        DigitalResource Get(string id, ResourceModel.User user);
+        List<DigitalResource> GetOrphanResourcesForUser(string userName);
     }
 }

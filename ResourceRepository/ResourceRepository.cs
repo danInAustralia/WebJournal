@@ -111,6 +111,34 @@ namespace Repository
         }
 
         /// <summary>
+        /// Get resources that do not belong to an album
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public List<DigitalResource> GetOrphanResourcesForUser(string userName)
+        {
+            List<DigitalResource> resources;// list = new List<Resource>();
+
+            var sessionFactory = SessionFactoryCreator.CreateSessionFactory();
+
+            using (var session = sessionFactory.OpenSession())
+            {
+                using (session.BeginTransaction())
+                {
+                    //session.CreateCriteria(typeof(DigitalResource)).ToList();
+                    resources = (from res in session.Query<DigitalResource>()
+                                where res.Owners.Any(x => userName == x.UserName)
+                                && res.Albums.Count() == 0
+                                select res).ToList();
+
+                }
+            }
+
+            return resources;
+        }
+
+        /// <summary>
         /// Get the specified file. This is restricted by user as files can be confidential
         /// </summary>
         /// <param name="id"></param>
@@ -298,10 +326,10 @@ namespace Repository
         //    throw new NotImplementedException();
         //}
 
-        public int AddToAlbum(string albumName, ResourceModel.DigitalResource resource)
+        public int AddToAlbum(int id, ResourceModel.DigitalResource resource)
         {
             int resourcesAdded = 0;
-            Album album = GetAlbums(x => x.Name == albumName).FirstOrDefault();
+            Album album = GetAlbums(x => x.ID == id).FirstOrDefault();
 
             if(album != null)
             {

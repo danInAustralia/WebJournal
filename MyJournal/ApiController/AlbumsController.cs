@@ -95,6 +95,19 @@ namespace MyJournal.ApiControllers
             }
         }
 
+        [Authorize]
+        [HttpGet]
+        public List<DigitalResource> OrphanResources()
+        {
+            IResourceRepository repository = new Repository.ResourceRepository();
+
+            string userName = this.User.Identity.Name;
+
+            List<DigitalResource> resources = repository.GetOrphanResourcesForUser(userName);
+
+            return resources;
+        }
+
         public bool GetDoesMd5Exist(string md5)
         {
             return true;
