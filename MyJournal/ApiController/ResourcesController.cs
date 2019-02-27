@@ -316,14 +316,53 @@ namespace MyJournal.ApiController
             return Ok(myResource);
         }
 
-        public bool DoesMd5Exist(string md5)
+        /// <summary>
+        /// Uploads a resource 
+        /// </summary>
+        [Authorize]
+        [HttpPost]
+        public IHttpActionResult UploadResource()
+        {
+            //throw new Exception("forced error");
+            HttpResponseMessage response = new HttpResponseMessage();
+            var httpRequest = HttpContext.Current.Request;
+            DigitalResource myResource = null;
+            //DigitalResource resource = null;
+            //if (albumID != null)
+            {
+                System.Web.HttpFileCollection files = System.Web.HttpContext.Current.Request.Files;
+                Repository.ResourceRepository repository = new Repository.ResourceRepository();
+                ReferenceRepository refRepository = new ReferenceRepository();
+                UserRepository ur = new UserRepository();
+                string currentUser = User.Identity.Name;
+                User user = ur.Get(currentUser);
+                //Album album = repository.GetAlbums(x => x.Name == albumID).FirstOrDefault();
+
+                //for (int i = 0; i < files.Count; i++)
+                {
+                    HttpPostedFile file = files[0];
+
+                    string name = file.FileName;
+                    using (Stream fileStream = file.InputStream)
+                    {
+                        myResource = repository.SaveOrGet(refRepository, user, fileStream, name);
+                    }
+                }
+            }
+
+            return Ok(myResource);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public bool DoesMd5Exist(string id)
         {
             UserRepository ur = new UserRepository();
             string currentUser = User.Identity.Name;
             User user = ur.Get(currentUser);
 
             Repository.ResourceRepository repository = new Repository.ResourceRepository();
-            return repository.ResourceExists(md5, user);
+            return repository.ResourceExists(id, user);
         }
 
         public void AddTag(string resourceID, string tag)
