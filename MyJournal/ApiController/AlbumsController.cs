@@ -27,7 +27,7 @@ namespace MyJournal.ApiControllers
         /// <returns>JSON of ViewModel of the list of albums retrieved from a repository</returns>
         /// 
         [Authorize]
-        public AlbumListViewModel GetAllAlbums()
+        public AlbumListViewModel Get()//GetAllAlbums()
         {
             string userName = User.Identity.Name;
             AlbumListViewModelFactory albumListFactory = new AlbumListViewModelFactory();
