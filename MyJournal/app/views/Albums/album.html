@@ -1,4 +1,4 @@
-﻿
+﻿<script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 <div>
     <h1>
         <div class="wrapper">
@@ -39,7 +39,7 @@
 
             <div style="clear: left"></div>
 
-            <div ng-repeat="resource in resources" style="width: 20%; height: 200px; float: left; padding: 3px" ng-click="showResourcePopup(resource)">
+            <div ng-repeat="resource in resources" style="width: 20%; height: 200px; float: left; padding: 3px" ng-click="showResourcePopup($index)">
                 <div class="photo thumbnail">
 
                     <img style="height:100%" http-src="/api/Resources/GetThumbnailRepresentation/{{resource.Md5}}" />
@@ -68,11 +68,47 @@
         </div>
         <div class="popup"
              dx-popup="popupOptions">
-            <p>Test popup</p>
-            <img style="height:95%" http-src="/api/Resources/Get/{{GetSelectedResource()}}" ng-if="!IsSelectedResourceAVideo()" />
-            <video id="embeddedPlayer" style="height:95%" controls ng-if="IsSelectedResourceAVideo()">
-                <source ng-src="/api/Resources/Get/{{GetSelectedResource()}}?access_token={{token}}" type="video/mp4">
-            </video>
+            <div class="dx-viewport">
+                <div id="resourceGallery" dx-gallery="galleryOptions" dx-item-alias="galleryItem">
+                    <div data-options="dxTemplate: {name: 'item'}">
+                        <div>
+                            <!--<img ng-src="{{galleryItem.Image}}" />-->
+                            <!--<img style="height:500px" http-src="/api/Resources/Get/{{GetSelectedResource()}}" ng-if="getResourceType() == 'image'" />-->
+                            <img style="height:750px" http-src="/api/Resources/Get/{{galleryItem.Md5}}" ng-if="getResourceType(galleryItem) == 'image'" />
+                            <video id="embeddedPlayer" style="height:720px" ng-if="getResourceType(galleryItem) == 'av'">
+                                <source ng-src="/api/Resources/Get/{{galleryItem.Md5}}?access_token={{token}}" type="video/mp4">
+                            </video>
+                            <p ng-if="getResourceType(galleryItem) == 'generic'">Resource is not an image or video. Download and use with appropriate software.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="media_control">
+                    <div id="play"></div>
+                    <div id="pause"></div>
+                    <div id="progress_bg"></div>
+                    <div id="progress"></div>
+                    <div id="progress_indicator"></div>
+                    <div id="fullscreen_expand"></div>
+                    <div id="fullscreen_collapse"></div>
+                    <google-cast-launcher id="castbutton"></google-cast-launcher>
+                    <div id="audio_bg"></div>
+                    <div id="audio_bg_track"></div>
+                    <div id="audio_indicator"></div>
+                    <div id="audio_bg_level"></div>
+                    <div id="audio_on"></div>
+                    <div id="audio_off"></div>
+                    <div id="duration">00:00:00</div>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>
+<!--<script>
+    window['__onGCastApiAvailable'] = function (isAvailable) {
+        if (isAvailable) {
+            initializeCastApi();
+        }
+    };
+</script>-->

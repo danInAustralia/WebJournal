@@ -4,6 +4,7 @@
             $scope.Total = 0;
             $scope.itemsPerPage = 20;
             $scope.CurrentPage = 1;
+            $scope.selectedIndex = 0;
 
             var authData = localStorageService.get('authorizationData');
             $scope.token = authData.token;
@@ -22,6 +23,21 @@
                         $scope.Total = resources.Total;
                         $scope.itemsPerPage = 20;
                         $scope.CurrentPage = 1;
+
+                        $scope.galleryOptions = {
+                            dataSource: $scope.resources,
+                            height: 720,
+                            width: "100%",
+                            loop: true,
+                            showIndicator: false,
+                            showNavButtons: true,
+                            slideshowDelay: 0,
+                            selectedIndex: $scope.selectedIndex,
+                            onInitialized: function (e) {
+                                $scope.galleryInstance = e.component;
+                                $scope.galleryInstance.option('selectedIndex', $scope.selectedIndex);
+                            }
+                        };
                     });
                 }
             });
@@ -67,7 +83,7 @@
 
         $scope.popupOptions = {
             width: 1100,
-            height: 800,
+            height: 900,
             showTitle: true,
             title: "Information",
             dragEnabled: false,
@@ -88,13 +104,44 @@
             var index = originalFileName.indexOf('.mov') >= 0 || originalFileName.indexOf('.mp4') >= 0 || originalFileName.indexOf('.avi');
             var isVideo = index > 0;
             return isVideo;
+        };
+
+        $scope.getResourceType = function (galleryItem) {
+            var type = 'generic';
+            var originalFileName = galleryItem.OriginalFileName.toLowerCase();
+            var index = originalFileName.indexOf('.mov') >= 0 || originalFileName.indexOf('.mp4') >= 0 || originalFileName.indexOf('.avi') || originalFileName.indexOf('.mp3') >= 0 || originalFileName.indexOf('.ogg') >= 0;
+            var isVideo = index > 0;
+            if (isVideo) {
+                type = 'av';
+            }
+            else {
+                index = originalFileName.indexOf('.jpeg') >= 0 || originalFileName.indexOf('.jpg') >= 0 || originalFileName.indexOf('.gif') || originalFileName.indexOf('.tiff') >= 0 || originalFileName.indexOf('.bmp') >= 0;
+                var isImage = index > 0;
+                if (isImage) {
+                    type = 'image';
+                }
+            }
+
+
+            return type;
         }
 
-        $scope.showResourcePopup = function(resource)
+        $scope.showResourcePopup = function(index)
         {
-            $scope.selectedResource = resource;
+            $scope.selectedIndex = index;
+            if ($scope.galleryInstance) {
+                $scope.galleryInstance.option('selectedIndex', index);
+            }
+            //$scope.selectedResource = $scope.resources[index];
+            //if ($scope.galleryOptions) {
+            //var gallery = $('#resourceGallery').dxGallery('instance');
+            //$scope.gallery.option('selectedIndex', index);
+            //    //$scope.galleryOptions.goToItem(index, true);
+            //}
             $scope.visiblePopup = true;
         }
+
+
 
             //$scope.AlbumResources = function(page)
         $scope.downloadResource = function(md5, originalFileName){
@@ -126,5 +173,18 @@
         //        return options;
         //    };
         //});
+
+            window['__onGCastApiAvailable'] = function (isAvailable) {
+                if (isAvailable) {
+                    initializeCastApi();
+                }
+            };
+
+            initializeCastApi = function () {
+                cast.framework.CastContext.getInstance().setOptions({
+                    receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+                    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                });
+            };
         
     }]);

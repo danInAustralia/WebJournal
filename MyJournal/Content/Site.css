@@ -36,11 +36,11 @@ nav a {
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
-input,
+/*input,
 select,
 textarea {
     max-width: 280px;
-}
+}*/
 
 #logo a {
     float: left;
@@ -114,11 +114,11 @@ h1 .arrow {
     left: 40px;
     width: 31px;
     height: 15px;
-    background: lavender;/*transparent url(/images/arrow.png) top center;*/
+    background: #eee;/*transparent url(/images/arrow.png) top center;*/
     z-index: 100;
 }
 
 h1 {
     padding: 12px 0;
-    background: lavender/*#e5ebed url(/images/pagetitlebg.jpg) repeat-x top center;*/
+    background: #eee/*#e5ebed url(/images/pagetitlebg.jpg) repeat-x top center;*/
 }

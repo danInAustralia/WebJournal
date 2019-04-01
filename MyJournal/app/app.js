@@ -35,6 +35,11 @@ photoApp.config(["$routeProvider", function ($routeProvider) {
         templateUrl: '/app/views/Home/index.html'
     });
 
+    $routeProvider.when('/register', {
+        templateUrl: '/app/views/Account/register.html',
+        controller: 'registerController'
+    });
+
     $routeProvider.when('/login', {
         templateUrl: '/app/views/Account/login.html',
         controller: 'loginController'

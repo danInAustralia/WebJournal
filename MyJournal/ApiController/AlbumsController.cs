@@ -87,6 +87,9 @@ namespace MyJournal.ApiControllers
                     Total = album.Resources.Count
                 };
 
+                //Clear the album's resources to prevent circular reference converting to json
+                album.Resources.Clear();
+
                 return resourceVM;
             }
             catch(Exception e)

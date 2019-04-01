@@ -1,0 +1,42 @@
+﻿<h1>
+    <div class="wrapper">
+        Get me registered
+    </div>
+</h1>
+<div class="contentbody" ng-controller="registerController">
+
+    <div class="row">
+        <div class="col-md-4">
+        </div>
+        <div class="col-md-4">
+            <form class="form-login" role="form">
+                <div class="form-group">
+                    <input type="text" class="form-control input-lg" placeholder="Email" data-ng-model="newUser.email" required autofocus>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control input-lg" placeholder="Name" data-ng-model="newUser.name" required>
+                </div>
+
+                <!--<div class="form-group">-->
+                <div class="form-group">
+                <input type="password" class="form-control input-lg" placeholder="Password" data-ng-model="loginData.password" required>
+                </div>
+                <input type="password" class="form-control input-lg" placeholder="Confirm Password" data-ng-model="loginData.password" required>
+                <!--</div>-->
+                <div class="form-group input-lg" style="text-align: center">
+                    <button class="btn btn-default" type="submit" data-ng-click="login()">Register</button>
+                </div>
+                <div data-ng-hide="message == ''" class="alert alert-danger">
+                    {{message}}
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-4" style="background-color: lightyellow">
+            <div class="wrapper lightsidecol">
+                <p>Please register to safely store your data and to be able to readily access it from anywhere in the world.  Registration is also enables you to access materials that your friends have shared with you for free!</p>
+                <a href="~/Views/Account/register.html">
+            </div>
+        </div>
+    </div>
+</div>

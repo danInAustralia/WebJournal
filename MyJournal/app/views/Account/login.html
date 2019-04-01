@@ -1,17 +1,38 @@
-﻿<div class="contentbody" ng-controller="loginController">
-    <h1>
-        <div class="wrapper">
-            Login
+﻿
+<h1>
+    <div class="wrapper">
+        Login
+    </div>
+</h1>
+<div class="contentbody" ng-controller="loginController">
+
+    <div class="row">
+        <div class="col-md-4">
         </div>
-    </h1>
-    <div class="wrapper lightsidecol">
-        <form class="form-login" role="form">
-            <input type="text" class="form-control" placeholder="Username" data-ng-model="loginData.userName" required autofocus>
-            <input type="password" class="form-control" placeholder="Password" data-ng-model="loginData.password" required>
-            <button class="btn btn-lg btn-info btn-block" type="submit" data-ng-click="login()">Login</button>
-            <div data-ng-hide="message == ''" class="alert alert-danger">
-                {{message}}
+        <div class="col-md-4">
+            <form class="form-login" role="form">
+                <div class="form-group">
+                    <input type="text" class="form-control input-lg" placeholder="Username" data-ng-model="loginData.userName" required autofocus>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control input-lg" placeholder="Password" data-ng-model="loginData.password" required>
+
+                </div>
+                <div class="form-actions" style="text-align: center">
+                    <button class="btn btn-primary" type="submit" data-ng-click="login()">Login</button>
+                    <a href="#/register" class="btn btn-link">Register</a>
+                </div>
+                <div data-ng-hide="message == ''" class="alert alert-danger">
+                    {{message}}
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <div class="wrapper lightsidecol">
+                <p>Please register to access the goodies</p>
+                <a href="#/register">Click to Register</a>
             </div>
-        </form>
+        </div>
     </div>
 </div>
