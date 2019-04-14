@@ -68,13 +68,17 @@
         </div>
         <div class="popup"
              dx-popup="popupOptions">
-            <div class="dx-viewport">
+            <div id="main_video" class="dx-viewport">
                 <div id="resourceGallery" dx-gallery="galleryOptions" dx-item-alias="galleryItem">
                     <div data-options="dxTemplate: {name: 'item'}">
                         <div>
                             <!--<img ng-src="{{galleryItem.Image}}" />-->
                             <!--<img style="height:500px" http-src="/api/Resources/Get/{{GetSelectedResource()}}" ng-if="getResourceType() == 'image'" />-->
                             <img style="height:750px" http-src="/api/Resources/Get/{{galleryItem.Md5}}" ng-if="getResourceType(galleryItem) == 'image'" />
+                            <div class="blackbg" id="playerstatebg">IDLE</div>
+                            <div class=label id="playerstate">IDLE</div>
+                            <!--<img src="images/bunny.jpg" id="video_image">-->
+                            <div id="video_image_overlay"></div>
                             <video id="embeddedPlayer" style="height:720px" ng-if="getResourceType(galleryItem) == 'av'">
                                 <source ng-src="/api/Resources/Get/{{galleryItem.Md5}}?access_token={{token}}" type="video/mp4">
                             </video>
@@ -100,6 +104,15 @@
                     <div id="audio_off"></div>
                     <div id="duration">00:00:00</div>
                 </div>
+                <div id="media_info">
+                    <div id="media_title">
+                    </div>
+                    <div id="media_subtitle">
+                    </div>
+                    <div id="media_desc">
+                    </div>
+                </div>
+
 
             </div>
         </div>
