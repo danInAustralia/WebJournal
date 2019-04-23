@@ -1,7 +1,7 @@
 ﻿angular.module('Journal.authService', [])
-    .factory('authService', ['$http', '$q', 'localStorageService', function ($http, $q, localStorageService) {
+    .factory('authService', ['$http', '$q', '$location', 'localStorageService', function ($http, $q, $location, localStorageService) {
  
-    var serviceBase = 'https://localhost:44309/';
+        var serviceBase = 'https://' + $location.host() + ':' + $location.port() + '/';//'https://localhost:44309/';
     var authServiceFactory = {};
  
     var _authentication = {
@@ -19,7 +19,8 @@
  
     //};
  
-    var _login = function (loginData) {
+        var _login = function (loginData) {
+            console.log("servicebase = " + serviceBase);
  
         var data = "grant_type=password&username=" + loginData.userName + "&password=" + loginData.password;
  

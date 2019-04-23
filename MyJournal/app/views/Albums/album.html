@@ -41,12 +41,14 @@
 
             <div ng-repeat="resource in resources" style="width: 20%; height: 200px; float: left; padding: 3px" ng-click="showResourcePopup($index)">
                 <div class="photo thumbnail">
-
-                    <img style="height:100%" http-src="/api/Resources/GetThumbnailRepresentation/{{resource.Md5}}" />
+                    <img style="height:100%" http-src="/api/Resources/GetThumbnailRepresentation/{{resource.Md5}}" ng-if="isVideo(resource) == false" />
+                    <video style="height:100%" ng-if="isVideo(resource) == true">
+                        <source ng-src="/api/Resources/Get/{{resource.Md5}}?access_token={{token}}" type="video/mp4">
+                    </video>
                     <!--instead of showing the video here, an image still will be shown, with ability for user to click and start playback-->
                     <!--<video style="height:100%" controls ng-if="resource.OriginalFileName.toLowerCase().indexOf('.mov')>=0">
-                        <source src="/api/Resources/{{resource.Md5}}" type="video/mp4">
-                    </video>-->
+        <source src="/api/Resources/{{resource.Md5}}" type="video/mp4">
+    </video>-->
                 </div>
                 <div dx-tag-box="tagOptions"></div>
                 <button class="btn btn-success" ng-click="downloadResource(resource.Md5, resource.OriginalFileName)">Download</button>
@@ -79,7 +81,7 @@
                             <div class=label id="playerstate">IDLE</div>
                             <!--<img src="images/bunny.jpg" id="video_image">-->
                             <div id="video_image_overlay"></div>
-                            <video id="embeddedPlayer" style="height:720px" ng-if="getResourceType(galleryItem) == 'av'">
+                            <video id="embeddedPlayer" style="height:720px" ng-if="isVideo(galleryItem) == true">
                                 <source ng-src="/api/Resources/Get/{{galleryItem.Md5}}?access_token={{token}}" type="video/mp4">
                             </video>
                             <p ng-if="getResourceType(galleryItem) == 'generic'">Resource is not an image or video. Download and use with appropriate software.</p>
@@ -106,6 +108,7 @@
                 </div>
                 <div id="media_info">
                     <div id="media_title">
+                        {{selectedFileName}}
                     </div>
                     <div id="media_subtitle">
                     </div>

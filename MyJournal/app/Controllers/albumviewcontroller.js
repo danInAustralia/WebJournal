@@ -5,6 +5,11 @@
             $scope.itemsPerPage = 20;
             $scope.CurrentPage = 1;
             $scope.selectedIndex = 0;
+            $scope.selectedFileName = 0;
+
+            $scope.onSelectionChanged = function (item) {
+                $scope.selectedFileName = item.OriginalFileName;
+            }
 
             var authData = localStorageService.get('authorizationData');
             $scope.token = authData.token;
@@ -36,12 +41,20 @@
                             onInitialized: function (e) {
                                 $scope.galleryInstance = e.component;
                                 $scope.galleryInstance.option('selectedIndex', $scope.selectedIndex);
+                                $scope.selectedResource = $scope.resources[$scope.selectedIndex];
+                                $scope.onSelectionChanged($scope.selectedResource);
                                 //$scope.CastPlayer.prototype.setupLocalPlayer();
                                 //this.initializeUI();
                             },
                             onContentReady: function (e) {
                                 CastPlayer.prototype.setupLocalPlayer();
                                 CastPlayer.prototype.initializeUI();
+                            },
+                            onSelectionChanged: function (e) {
+                                //$scope.selectedResource = e;
+                                $scope.castPlayer.playerHandler.target.pause();
+                                $scope.selectedResource = $scope.resources[$scope.selectedIndex];
+                                $scope.onSelectionChanged(e.addedItems[0]);
                             }
                         };
                     });
@@ -112,8 +125,13 @@
             return isVideo;
         };
 
+            $scope.isVideo = function (galleryItem) {
+                var isVideo = $scope.getResourceType(galleryItem) == 'av';
+                return isVideo;
+            }
+
         $scope.getResourceType = function (galleryItem) {
-            $scope.selectedResource = galleryItem;
+            //$scope.selectedResource = galleryItem;
             var type = 'generic';
             var originalFileName = galleryItem.OriginalFileName.toLowerCase();
             var index = originalFileName.indexOf('.mov') >= 0 || originalFileName.indexOf('.mp4') >= 0 || originalFileName.indexOf('.avi') || originalFileName.indexOf('.mp3') >= 0 || originalFileName.indexOf('.ogg') >= 0;
@@ -395,8 +413,8 @@
                 this.load = function (mediaIndex) {
                     castPlayer.playerState = PLAYER_STATE.LOADING;
 
-                    document.getElementById('media_title').innerHTML =
-                        $scope.selectedResource.OriginalFileName;
+                    //document.getElementById('media_title').innerHTML =
+                    //    $scope.selectedResource.OriginalFileName;
                     document.getElementById('media_subtitle').innerHTML =
                         "";
                     document.getElementById('media_desc').innerHTML =
@@ -413,7 +431,7 @@
                     if (castPlayer.currentMediaTime > 0) {
                         this.seekTo(castPlayer.currentMediaTime);
                     }
-                    this.play();
+                    this.pause();
                     castPlayer.startProgressTimer();
                     this.updateDisplayMessage();
                 };
@@ -771,7 +789,8 @@
                     pi.style.marginLeft = pp + 'px';
                 }
 
-                this.PlayerHandler.seekTo(curr);
+                //this.PlayerHandler.seekTo(curr);
+                $scope.castPlayer.playerHandler.target.seekTo(curr);
             };
 
             /**
@@ -1005,8 +1024,8 @@
              */
             CastPlayer.prototype.initializeUI = function () {
                 // Set initial values for title, subtitle, and description
-                document.getElementById('media_title').innerHTML =
-                    $scope.resources[$scope.selectedIndex].OriginalFileName;
+                //document.getElementById('media_title').innerHTML =
+                //    $scope.resources[$scope.selectedIndex].OriginalFileName;
                 document.getElementById('media_subtitle').innerHTML =
                     "secondary title";
                 document.getElementById('media_desc').innerHTML =
