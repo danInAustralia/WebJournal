@@ -363,6 +363,10 @@
     <Content Include="Content\imagefiles\ic_media_route_on_custom.png" />
     <Content Include="Content\imagefiles\ic_media_route_press.png" />
     <Content Include="Content\imagefiles\logo.png" />
+    <Content Include="Content\imagefiles\logo2.png" />
+    <Content Include="Content\imagefiles\logo2.tiff" />
+    <Content Include="Content\imagefiles\logoonly.png" />
+    <Content Include="Content\imagefiles\longlogo.png" />
     <Content Include="Content\imagefiles\pause-hover.png" />
     <Content Include="Content\imagefiles\pause-press.png" />
     <Content Include="Content\imagefiles\pause.png" />

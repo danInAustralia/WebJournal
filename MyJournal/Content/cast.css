@@ -69,13 +69,13 @@
     color: #fff;
 }
 
-#logo {
+/*#logo {
     float: left;
     width: 201px;
     height: 71px;
     background-image: url('imagefiles/logo.png');
     margin: 10px 25px 0px 25px;
-}
+}*/
 
 .header_tab {
     float: left;

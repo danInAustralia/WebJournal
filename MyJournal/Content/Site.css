@@ -44,7 +44,7 @@ textarea {
 
 #logo a {
     float: left;
-    background: url(/images/logo.png) no-repeat 0 0;
+    background: url(/content/imagefiles/longlogo.png) no-repeat 0 0;
     width: 255px;
     height: 80px;
     display: block;
