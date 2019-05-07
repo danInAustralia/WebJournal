@@ -18,8 +18,8 @@ namespace MyJournal.Factories
                 Albums = MapAlbumsToVM(repository.GetAlbums(x => x.Owner.UserName == userName)),
                 NewAlbum = new ResourceModel.Album
                 {
-                    Name = "New Album",
-                    Description = "New Album description...",
+                    Name = "",
+                    Description = "",
                     AlbumDate = DateTime.Today,
                     Resources = new List<ResourceModel.DigitalResource>()
                 }

@@ -8,6 +8,7 @@ angular.module('Journal.AlbumListController', [])
         $scope.new_album = {};
         $scope.add_error_text = '';
         $scope.page_load_error = "";
+        $scope.visiblePopup = false;
 
         albumProvider.getAlbums(function (err, albums) {
             if (err) {
@@ -16,6 +17,23 @@ angular.module('Journal.AlbumListController', [])
                 $scope.Albums = albums;
             }
         });
+
+        $scope.popupOptions = {
+            width: 1100,
+            height: 400,
+            showTitle: true,
+            title: "New Album",
+            dragEnabled: false,
+            closeOnOutsideClick: true,
+            bindingOptions: {
+                visible: "visiblePopup",
+            }
+        };
+
+        $scope.showNewAlbumPopup = function()
+        {
+            $scope.visiblePopup = true;
+        }
 
         $scope.addAlbum = function (album_data) {
 
@@ -35,7 +53,7 @@ angular.module('Journal.AlbumListController', [])
                     $scope.add_error_text = '';
 
                     // now, redirect to load in the album you just created!
-                    $window.location.href= "/albums/Detail?albumName=" + album_data.Name;
+                    $window.location.href= "/#album/" + results.ID;
                 }
 
             });

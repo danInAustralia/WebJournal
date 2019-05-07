@@ -64,7 +64,7 @@ angular.module('Journal.AlbumProvider', [])
         this.getAlbum = function (id, callback) {
             $http(
                 {
-                    method: "GET", url: "/api/albums/", params: { id: id }
+                    method: "GET", url: "/api/albums/getAlbum", params: { id: id }
                 })
                 .then(function (response) {
                     callback(null, response.data);

@@ -6,6 +6,7 @@
             $scope.CurrentPage = 1;
             $scope.selectedIndex = 0;
             $scope.selectedFileName = 0;
+            $scope.serviceBase = 'https://' + $location.host() + ':' + $location.port() + '/';
 
             $scope.onSelectionChanged = function (item) {
                 $scope.selectedFileName = item.OriginalFileName;
@@ -412,13 +413,15 @@
                     }.bind(this);
 
                     playerTarget.load = function (mediaIndex) {
-                        console.log('Loading...' + $scope.resources[mediaIndex].OriginalFileName);
-                        var mediaInfo = new chrome.cast.media.MediaInfo(
-                            "/api/Resources/Get/" + $scope.resources[mediaIndex].Md5 + "?access_token=" + $scope.token, 'video/mp4');
+                        console.log('Loading...' + $scope.resources[$scope.selectedIndex].OriginalFileName);
+                        var path = $scope.serviceBase + "api/Resources/Get/" + $scope.resources[$scope.selectedIndex].Md5 + "?access_token=" + $scope.token;
+
+                        console.log('Loading...' + path);
+                        var mediaInfo = new chrome.cast.media.MediaInfo(path, 'video/mp4');
 
                         mediaInfo.metadata = new chrome.cast.media.GenericMediaMetadata();
                         mediaInfo.metadata.metadataType = chrome.cast.media.MetadataType.GENERIC;
-                        mediaInfo.metadata.title = $scope.resources[mediaIndex].OriginalFileName;
+                        mediaInfo.metadata.title = $scope.resources[$scope.selectedIndex].OriginalFileName;
                         //mediaInfo.metadata.images = [
                         //    { 'url': MEDIA_SOURCE_ROOT + this.mediaContents[mediaIndex]['thumb'] }];
 
@@ -428,7 +431,7 @@
                             function (errorCode) {
                                 this.playerState = PLAYER_STATE.ERROR;
                                 console.log('Remote media load error: ' +
-                                    CastPlayer.getErrorMessage(errorCode));
+                                    $scope.castPlayer.getErrorMessage(errorCode));
                             }.bind(this));
                     }.bind(this);
 

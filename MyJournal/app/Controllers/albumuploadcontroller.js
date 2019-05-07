@@ -3,7 +3,18 @@
     function ($scope, $routeParams, $http, albumProvider) {
         $scope.albumID = $routeParams.id;
     $scope.page_load_error = "";
-    $scope.done_uploading = false;
+        $scope.done_uploading = false;
+
+        albumProvider.getAlbum($routeParams.id, function (err, album) {
+            if (err) {
+                if (err.error == "not_found")
+                    $scope.page_load_error = "No such album. Are you calling this right?";
+                else
+                    $scope.page_load_error = "Unexpected error loading albums: " + err.message;
+            } else {
+                $scope.album = album;
+            }
+        });
 
 
     $scope.uploader = albumProvider.getUploader($scope.albumID, $scope);

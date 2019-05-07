@@ -61,6 +61,8 @@ namespace MyJournal.ApiControllers
             try
             {
                 Album album = repository.GetAlbum(id, userName);
+                //reset the resources list because it causes circular reference
+                album.Resources = new List<ResourceModel.DigitalResource>();
 
                 return album;
             }
