@@ -34,14 +34,14 @@
                     <li><a href="#/albums">New Album</a></li>
 
                     <!--<li>@Html.ActionLink("About", "About", "Home")</li>
-    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>-->
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>-->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li data-ng-hide="!authentication.isAuth"><a href="#">Welcome {{authentication.userName}}</a></li>
                     <li data-ng-hide="!authentication.isAuth"><a href="#/orders">My Subscription</a></li>
                     <li data-ng-hide="!authentication.isAuth"><a href="" data-ng-click="logOut()">Logout</a></li>
                     <li data-ng-hide="authentication.isAuth"> <a href="#/login">Login</a></li>
-                    <li data-ng-hide="authentication.isAuth"> <a href="#/signup">Sign Up</a></li>
+                    <li data-ng-hide="authentication.isAuth"> <a href="#/register">Sign Up</a></li>
                 </ul>
                 <!--@Html.Partial("_LoginPartial")-->
             </div>
@@ -55,7 +55,7 @@
     <div data-ng-view=""></div>
     <hr />
     <footer>
-        <p>2018 - Journal</p>
+        <p style="margin-left:40px">&copy; 2018 - Journal</p>
     </footer>
 
     <!-- 3rd party libraries -->
@@ -91,6 +91,7 @@
     <script type="text/javascript" src="app/Controllers/albumuploadcontroller.js"></script>
     <script type="text/javascript" src="app/Controllers/albumlistcontroller.js"></script>
     <script type="text/javascript" src="app/Controllers/loginController.js"></script>
+    <script type="text/javascript" src="app/Controllers/checkEmailController.js"></script>
     <script type="text/javascript" src="app/Controllers/albumviewcontroller.js"></script>
 </body>
 </html>

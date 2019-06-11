@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -193,12 +194,15 @@ namespace MyJournal.Controllers
             return View();
         }
 
-        //
-        // POST: /Account/ForgotPassword
+        /// <summary>
+        /// this get called when the user clicks reset password. It generates a code associated with their email.
+        /// This code will be used as a parameter to ResetPassword
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        public async void ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -206,35 +210,20 @@ namespace MyJournal.Controllers
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return View("ForgotPasswordConfirmation");
+                    //return View("ForgotPasswordConfirmation");
                 }
 
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                //var callbackUrl = HttpContext.Current.
+                //send an email to the user to direct them to key in their new password
+                //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
                 // return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-
-        //
-        // GET: /Account/ForgotPasswordConfirmation
-        [AllowAnonymous]
-        public ActionResult ForgotPasswordConfirmation()
-        {
-            return View();
-        }
-
-        //
-        // GET: /Account/ResetPassword
-        [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
-        {
-            return code == null ? View("Error") : View();
+            //return View(model);
         }
 
         //
