@@ -1,4 +1,5 @@
 ﻿using Microsoft.Owin;
+using MyJournal.Models;
 using Owin;
 using System.Web.Http;
 
@@ -10,6 +11,9 @@ namespace MyJournal
         public void Configuration(IAppBuilder app)
         {
             HttpConfiguration config = new HttpConfiguration();
+            //app.CreatePerOwinContext(ApplicationDbContext.Create);
+            //app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
+            //app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
 
             ConfigureOAuth(app);
 

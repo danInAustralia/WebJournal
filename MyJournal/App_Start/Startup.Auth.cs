@@ -83,7 +83,7 @@ namespace MyJournal
         {
             OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
             {
-                AllowInsecureHttp = true,
+                AllowInsecureHttp = false,
                 TokenEndpointPath = new PathString("/token"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
                 Provider = new SimpleAuthorizationServerProvider()
@@ -91,6 +91,7 @@ namespace MyJournal
 
             // Token Generation
             app.UseOAuthAuthorizationServer(OAuthServerOptions);
+
             //app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
 
             //app.UseOAuthBearerTokens(OAuthServerOptions);
@@ -100,6 +101,11 @@ namespace MyJournal
             {
                 Provider = new QueryStringOAuthBearerProvider()
             });
+
+            // Configure the db context, user manager and signin manager to use a single instance per request
+            //app.CreatePerOwinContext(ApplicationDbContext.Create);
+            //app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
+            //app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
 
         }
     }

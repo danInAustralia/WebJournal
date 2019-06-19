@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security.DataProtection;
 using MyJournal.Models;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,11 @@ namespace MyJournal.ApiController
         public AccountRepository()
         {
             _ctx = new ApplicationDbContext();
+            var provider = new DpapiDataProtectionProvider("Journal");
             _userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(_ctx));
+            _userManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(
+                provider.Create("JournalToken"));
+            _userManager.EmailService = new EmailService();
         }
 
         //public async Task<IdentityResult> RegisterUser(UserModel userModel)
@@ -42,11 +47,33 @@ namespace MyJournal.ApiController
             return user;
         }
 
+        public async Task<ApplicationUser> FindByNameAsync(string userName)
+        {
+            ApplicationUser user = await _userManager.FindByNameAsync(userName);
+
+            return user;
+        }
+
+        public async Task<bool> IsEmailConfirmedAsync(ApplicationUser user)
+        {
+            return await _userManager.IsEmailConfirmedAsync(user.Id);
+        }
+
         public void Dispose()
         {
             //_ctx.Dispose();
             _userManager.Dispose();
 
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(string id)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(id);
+        }
+
+        internal async Task SendEmailAsync(string userID, string emailTitle, string emailContent)
+        {
+            await _userManager.SendEmailAsync(userID, emailTitle, emailContent);
         }
     }
 }

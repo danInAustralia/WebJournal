@@ -1,28 +1,17 @@
 ﻿angular.module('Journal.checkEmailController', [])
-    .controller('checkEmailController', ['$scope', '$location', 'authService', '$http', '$routeParams',
-        function ($scope, $location, authService, $http, $routeParams) {
+    .controller('checkEmailController', ['$scope', '$location', 'authService', '$http', '$routeParams', 'authService',
+        function ($scope, $location, authService, $http, $routeParams, authService) {
 
             var userId = $routeParams.email;
-            //var token = $routeParams.token;
 
-            //$scope.loginData = {
-            //    userName: "",
-            //    password: ""
-            //};
+            authService.sendResetPasswordEmail(userId).then(function (response) {
+                console.log("Email sent");
+                //$location.path('/albums');
 
-            //$scope.message = "";
-
-            //$scope.register = function () {
-
-            //    authService.login($scope.loginData).then(function (response) {
-
-            //        $location.path('/albums');
-
-            //    },
-            //        function (err) {
-            //            $scope.message = err.data.error_description;
-            //        });
-            //};
+                },
+                function (err) {
+                    $scope.message = err.data.error_description;
+            });
 
 
 

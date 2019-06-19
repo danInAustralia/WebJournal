@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Host.SystemWeb;
 using MyJournal.Models;
 using System;
@@ -19,7 +20,12 @@ namespace MyJournal.ApiController
         {
             get
             {
-                return _signInManager ?? Request.GetOwinContext().Get<ApplicationSignInManager>("");
+                if(_signInManager == null)
+                {
+                    var abc = Request.GetOwinContext();
+                    ApplicationSignInManager manager = abc.Get<ApplicationSignInManager>();
+                }
+                return _signInManager ?? Request.GetOwinContext().Get<ApplicationSignInManager>();
             }
             private set
             {
@@ -32,7 +38,12 @@ namespace MyJournal.ApiController
         {
             get
             {
-                return _userManager ?? Request.GetOwinContext().Get<ApplicationUserManager>("");
+                if (_userManager == null)
+                {
+                    var abc = Request.GetOwinContext();
+                    ApplicationUserManager manager = abc.Get<ApplicationUserManager>();
+                }
+                return _userManager ?? Request.GetOwinContext().Get<ApplicationUserManager>();
             }
             private set
             {
@@ -162,12 +173,13 @@ namespace MyJournal.ApiController
         /// <returns></returns>
         [HttpPost]
         //[AllowAnonymous]
-        public async void ForgotPassword(ForgotPasswordViewModel model)
+        public async Task ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                AccountRepository _repo = new AccountRepository();
+                var user = await _repo.FindByNameAsync(model.Email);
+                if (user == null || !(await _repo.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return; ;// View("ForgotPasswordConfirmation");
@@ -175,11 +187,11 @@ namespace MyJournal.ApiController
 
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                string code = await _repo.GeneratePasswordResetTokenAsync(user.Id);
                 string port = Request.RequestUri.Port == 443 ? String.Empty : Request.RequestUri.Port.ToString();
                 var callbackUrl = Request.RequestUri.Scheme + Request.RequestUri.Host + port + "/reset?userID=" + model.Email + "&code=" + code;
                 //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                await _repo.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
                 // return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
