@@ -1,5 +1,6 @@
 ﻿var photoApp = angular.module("app", ["Journal.loginController",
     "Journal.checkEmailController",
+    "Journal.resetController",
     "LocalStorageModule",
     "Journal.authService", 
     "Journal.authInterceptorService",
@@ -45,9 +46,9 @@ photoApp.config(["$routeProvider", function ($routeProvider) {
         controller: 'checkEmailController',
         templateUrl: '/app/views/Account/checkemail.html'
     });
-
-    $routeProvider.when('/reset-password', {
-        controller: 'ResetPasswordController',
+    /*reset password*/
+    $routeProvider.when('/reset', {
+        controller: 'resetController',
         templateUrl: '/app/views/Account/reset.html'
     });
 

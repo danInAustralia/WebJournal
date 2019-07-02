@@ -21,10 +21,16 @@ namespace MyJournal
         public async Task SendAsync(IdentityMessage message)
         {
             SmtpClient client = new SmtpClient();
-            await client.SendMailAsync(ConfigurationManager.AppSettings["SupportEmailAddr"],
-                                        message.Destination,
-                                        message.Subject,
-                                        message.Body);
+            MailMessage mm = new MailMessage(ConfigurationManager.AppSettings["SupportEmailAddr"],
+                message.Destination,
+                message.Subject,
+                message.Body
+                );
+            mm.IsBodyHtml = true;
+            mm.From = new MailAddress(ConfigurationManager.AppSettings["SupportNoReplyAddr"], 
+                ConfigurationManager.AppSettings["SupportEmailName"]);
+
+            await client.SendMailAsync(mm);
             // Plug in your email service here to send an email.
             //return Task.FromResult(0);
         }

@@ -265,6 +265,7 @@
     <Content Include="app\Controllers\checkEmailController.js" />
     <Content Include="app\Controllers\indexController.js" />
     <Content Include="app\Controllers\registerController.js" />
+    <Content Include="app\Controllers\resetController.js" />
     <Content Include="app\views\Account\checkemail.html" />
     <Content Include="app\views\Account\login.html" />
     <Content Include="app\app.js" />
@@ -276,6 +277,7 @@
     <Content Include="app\services\authInerceptorService.js" />
     <Content Include="app\services\authService.js" />
     <Content Include="app\views\Account\register.html" />
+    <Content Include="app\views\Account\reset.html" />
     <Content Include="app\views\Albums\album.html" />
     <Content Include="app\views\Albums\list.html" />
     <Content Include="app\views\Albums\upload.html" />

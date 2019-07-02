@@ -75,5 +75,10 @@ namespace MyJournal.ApiController
         {
             await _userManager.SendEmailAsync(userID, emailTitle, emailContent);
         }
+
+        internal async Task ResetPasswordAsync(string id, string code, string password)
+        {
+            await _userManager.ResetPasswordAsync(id, code, password);
+        }
     }
 }

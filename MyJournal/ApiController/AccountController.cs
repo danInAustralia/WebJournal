@@ -4,6 +4,7 @@ using Microsoft.Owin.Host.SystemWeb;
 using MyJournal.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -188,10 +189,10 @@ namespace MyJournal.ApiController
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
                 string code = await _repo.GeneratePasswordResetTokenAsync(user.Id);
-                string port = Request.RequestUri.Port == 443 ? String.Empty : Request.RequestUri.Port.ToString();
-                var callbackUrl = Request.RequestUri.Scheme + Request.RequestUri.Host + port + "/reset?userID=" + model.Email + "&code=" + code;
+                string port = Request.RequestUri.Port == 443 ? String.Empty : ":"+Request.RequestUri.Port.ToString();
+                var callbackUrl = Request.RequestUri.Scheme + "://" + Request.RequestUri.Host + port  + "/#/reset?userID=" + model.Email + "&code=" + code;
                 //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                await _repo.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                await _repo.SendEmailAsync(user.Id, "Reset Password", "<p>Dear customer,</p> <p>we have received a request to reset your password. If this was not you, please ignore this e-mail.</p><p>Otherwise, please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a></p><p>Please note that this is an automated email. Please end any further queries to "+ ConfigurationManager.AppSettings["SupportEmailAddr"] + "</p>");
                 // return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
@@ -199,27 +200,21 @@ namespace MyJournal.ApiController
             //return View(model);
         }
 
-        //[HttpPost]
-        //[AllowAnonymous]
-        //public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(model);
-        //    }
-        //    var user = await UserManager.FindByNameAsync(model.Email);
-        //    if (user == null)
-        //    {
-        //        // Don't reveal that the user does not exist
-        //        return RedirectToAction("ResetPasswordConfirmation", "Account");
-        //    }
-        //    var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
-        //    if (result.Succeeded)
-        //    {
-        //        return RedirectToAction("ResetPasswordConfirmation", "Account");
-        //    }
-        //    AddErrors(result);
-        //    return View();
-        //}
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                AccountRepository _repo = new AccountRepository();
+                var user = await UserManager.FindByNameAsync(model.Email);
+                if (user == null)
+                {
+                    // Don't reveal that the user does not exist
+                    return;
+                }
+                await _repo.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            }
+        }
     }
 }

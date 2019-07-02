@@ -75,6 +75,26 @@
             return deferred.promise;
         };
 
+        var setPassword = function (userID, key, password) {
+            var deferred = $q.defer();
+            $http.post('/api/Account/ForgotPassword/', { Email: emailAddress })
+                .then(function (response) {
+
+                    //localStorageService.set('authorizationData', { token: response.data.access_token, userName: loginData.userName });
+
+                    //_authentication.isAuth = true;
+                    //_authentication.userName = loginData.userName;
+
+                    deferred.resolve(response);
+
+                },
+                    function (response) {
+                        //_logOut();
+                        deferred.reject(response);
+                    });
+            return deferred.promise;
+        };
+
         var _fillAuthData = function () {
 
             var authData = localStorageService.get('authorizationData');
