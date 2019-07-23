@@ -1,9 +1,12 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using MyJournal.ApiServices;
+using MyJournal.ApiViewModels;
 using Repository;
 using ResourceModel;
 using ResourceRepository;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -351,6 +354,79 @@ namespace MyJournal.ApiController
             }
 
             return Ok(myResource);
+        }
+
+        /// <summary>
+        /// uploads part of a large file
+        /// </summary>
+        /// <param name="md5OfResource">the identifier key of the file. MD5 hash recommended</param>
+        /// <param name="uploadIdentifier">the S3 API identifier given to the group of uploads. Keep empty if not initialised (first call in sequence)</param>
+        /// <param name="partNumber">the file number in the sequence</param>
+        /// <param name="numberOfParts">the total number of parts that make up the whole</param>
+        /// <returns>the S3 Ekey of the partial upload</returns>
+        //[Authorize]
+        [HttpPost]
+        public async Task<string> UploadPartial()
+        {
+            //assemble parameters
+            var streamProvider = new CustomMultipartFileStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(streamProvider);
+            string md5OfResource = streamProvider.FormData["md5OfResource"];
+            string uploadIdentifier = streamProvider.FormData["uploadIdentifier"];
+            int partNumber = int.Parse(streamProvider.FormData["partNumber"]);
+            int numberOfParts = int.Parse(streamProvider.FormData["numberOfParts"]);
+
+            string id = String.Empty;
+            HttpResponseMessage response = new HttpResponseMessage();
+            var httpRequest = HttpContext.Current.Request;
+            //DigitalResource resource = null;
+            //if (albumID != null)
+            foreach (KeyValuePair<string, Stream> file in streamProvider.FileStreams)
+            {
+                string fileName = file.Key;
+                Stream stream = file.Value;
+                //System.Web.HttpFileCollection files = System.Web.HttpContext.Current.Request.Files;
+                Repository.ResourceRepository repository = new Repository.ResourceRepository();
+                ReferenceRepository refRepository = new ReferenceRepository();
+                UserRepository ur = new UserRepository();
+                string currentUser = User.Identity.Name;
+                User user = ur.Get(currentUser);
+                //Album album = repository.GetAlbums(x => x.Name == albumID).FirstOrDefault();
+                    
+                //string name = file.FileName;
+
+                id = await repository.UploadPartial(user, md5OfResource, uploadIdentifier, stream, partNumber, numberOfParts);
+
+            }
+
+            return id;
+        }
+
+        /// <summary>
+        /// combine the partial uploads into the original resource
+        /// </summary>
+        /// <param name="uploadID">id of the sequence of partial uploads</param>
+        /// <param name="partIDs"></param>
+        /// <param name="originalName"></param>
+        /// <param name="md5OfResource">md5 of entire resource (not md5 of part hashes)</param>
+        /// <param name="totalSize"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<string> CompletePartialAndSaveResource(PartialUpload partialUploadDetails)
+        {
+            ReferenceRepository refRepository = new ReferenceRepository();
+            UserRepository ur = new UserRepository();
+            string currentUser = User.Identity.Name;
+            User user = ur.Get(currentUser);
+
+            Repository.ResourceRepository repository = new Repository.ResourceRepository();
+            string resourceTagID = repository.CompletePartialAndSaveResource(refRepository, 
+                user, 
+                partialUploadDetails.uploadID, partialUploadDetails.originalName,
+                partialUploadDetails.md5OfResource,
+                partialUploadDetails.partTags,
+                partialUploadDetails.totalSize);
+            return resourceTagID;
         }
 
         [Authorize]

@@ -238,6 +238,8 @@
     <Compile Include="ApiController\AccountController.cs" />
     <Compile Include="ApiController\AccountRepository.cs" />
     <Compile Include="ApiController\ResourcesController.cs" />
+    <Compile Include="ApiServices\CustomMultipartFileStreamProvider.cs" />
+    <Compile Include="ApiViewModels\PartialUpload.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
