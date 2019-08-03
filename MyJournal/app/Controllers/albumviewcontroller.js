@@ -54,8 +54,20 @@
                             onSelectionChanged: function (e) {
                                 //$scope.selectedResource = e;
                                 $scope.castPlayer.playerHandler.target.pause();
+                                //convoluted way of incrementing/decrementing the selected index when next/previous is clicked.
+                                if ($scope.selectedIndex < $scope.resources.length) {
+                                    if ($scope.resources[$scope.selectedIndex + 1].Md5 == e.addedItems[0].Md5) {
+                                        $scope.selectedIndex = $scope.selectedIndex + 1;
+                                    }
+                                }
+                                if ($scope.selectedIndex < $scope.resources.length) {
+                                    if ($scope.resources[$scope.selectedIndex - 1].Md5 == e.addedItems[0].Md5) {
+                                        $scope.selectedIndex = $scope.selectedIndex - 1;
+                                    }
+                                }
                                 $scope.selectedResource = $scope.resources[$scope.selectedIndex];
                                 $scope.onSelectionChanged(e.addedItems[0]);
+                                $scope.castPlayer.playerHandler.target.load();
                             }
                         };
                     });
@@ -94,8 +106,9 @@
         }
 
         $scope.pageChanged = function () {
-            albumProvider.getAlbumResources($scope.AlbumName, $scope.CurrentPage, function (err, resources) {
+            albumProvider.getAlbumResources($scope.album.ID, $scope.CurrentPage, function (err, resources) {
                 $scope.resources = resources.Resources;
+                $scope.galleryOptions.dataSource = $scope.resources;
                 $scope.Total = resources.Total;
             });
 
@@ -151,6 +164,32 @@
 
             return type;
         }
+
+            var getMimeType = function (galleryItem) {
+                var mime = '';
+                if (galleryItem.OriginalFileName.toLowerCase().indexOf('.mov') >= 0) {
+                    mime = 'video/mp4';
+                }
+
+                else if (galleryItem.OriginalFileName.toLowerCase().indexOf('.mp4') >= 0) {
+                    mime = 'video/mp4';
+                }
+
+                else if (galleryItem.OriginalFileName.toLowerCase().indexOf('.avi') >= 0) {
+                    mime = 'video/mp4';
+                }
+
+                else if (galleryItem.OriginalFileName.toLowerCase().indexOf('.mp3') >= 0) {
+                    mime = 'audio/mpeg';
+                }
+                else if (galleryItem.OriginalFileName.toLowerCase().indexOf('.jpeg') >= 0) {
+                    mime = 'image/jpeg';
+                }
+                else if (galleryItem.OriginalFileName.toLowerCase().indexOf('.jpg') >= 0) {
+                    mime = 'image/jpeg';
+                }
+                return mime;
+            }
 
         $scope.showResourcePopup = function(index)
         {
@@ -358,9 +397,9 @@
                         cast.framework.RemotePlayerEventType.IS_PAUSED_CHANGED,
                         function () {
                             if (this.remotePlayer.isPaused) {
-                                this.PlayerHandler.pause();
+                                this.PlayerHandler.target.pause();
                             } else {
-                                this.PlayerHandler.play();
+                                this.PlayerHandler.target.play();
                             }
                         }.bind(this)
                     );
@@ -417,7 +456,8 @@
                         var path = $scope.serviceBase + "api/Resources/Get/" + $scope.resources[$scope.selectedIndex].Md5 + "?access_token=" + $scope.token;
 
                         console.log('Loading...' + path);
-                        var mediaInfo = new chrome.cast.media.MediaInfo(path, 'video/mp4');
+                        var type = getMimeType($scope.resources[$scope.selectedIndex]);
+                        var mediaInfo = new chrome.cast.media.MediaInfo(path, type);
 
                         mediaInfo.metadata = new chrome.cast.media.GenericMediaMetadata();
                         mediaInfo.metadata.metadataType = chrome.cast.media.MetadataType.GENERIC;
