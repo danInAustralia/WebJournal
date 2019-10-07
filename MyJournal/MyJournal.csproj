@@ -18,7 +18,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort>52885</IISExpressSSLPort>
+    <IISExpressSSLPort>44309</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
@@ -493,6 +493,10 @@
     <Content Include="Content\fonts\Roboto-300.woff2" />
     <Content Include="Content\fonts\Roboto-300.woff" />
     <Content Include="Content\fonts\Roboto-300.ttf" />
+    <Content Include=".ebextensions\https-instance-securitygroup.config" />
+    <Content Include=".ebextensions\https-reencrypt-clb.config" />
+    <Content Include=".ebextensions\https-lbsecuritygroup.config" />
+    <Content Include=".ebextensions\https-backendsecurity.config" />
     <None Include="Properties\PublishProfiles\myjournalanywhere - Web Deploy.pubxml" />
     <Content Include="Scripts\cldr.js" />
     <Content Include="Scripts\cldr\event.js" />

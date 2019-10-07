@@ -3,34 +3,40 @@
         Get me registered
     </div>
 </h1>
-<div class="contentbody" ng-controller="registerController">
+<div class="contentbody">
 
     <div class="row">
         <div class="col-md-4">
         </div>
         <div class="col-md-4">
             <form class="form-login" role="form">
-                <!--<div class="form-group">
-                    <input type="text" class="form-control input-lg" placeholder="Email" data-ng-model="newUser.email" required autofocus>
+                <div class="form-group">
+                    <input type="text" class="form-control input-lg" placeholder="Email" data-ng-model="loginData.email" required autofocus>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control input-lg" placeholder="Name" data-ng-model="newUser.name" required>
-                </div>-->
+                    <input type="text" class="form-control input-lg" place holder="First name" data-ng-model="loginData.firstName" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control input-lg" placeholder="Last Name" data-ng-model="loginData.lastName" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control input-lg" placeholder="Nickname" data-ng-model="loginData.nickName" required>
+                </div>
 
                 <!--<div class="form-group">-->
                 <div class="form-group">
-                    <input type="password" class="form-control input-lg" placeholder="Password" data-ng-model="password" required>
+                    <input type="password" class="form-control input-lg" placeholder="Password" data-ng-model="loginData.password" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control input-lg" placeholder="Confirm Password" data-ng-model="confirmPassword" required>
+                    <input type="password" class="form-control input-lg" placeholder="Confirm Password" data-ng-model="loginData.confirmPassword" required>
                 </div>
-                    <!--</div>-->
-                    <div class="form-group input-lg" style="text-align: center">
-                        <button class="btn btn-default" type="submit" data-ng-click="login()">Register</button>
-                    </div>
-                    <div data-ng-hide="message == ''" class="alert alert-danger">
-                        {{message}}
-                    </div>
+                <!--</div>-->
+                <div class="form-group input-lg" style="text-align: center">
+                    <button class="btn btn-default" type="submit" data-ng-click="register()">Register</button>
+                </div>
+                <div data-ng-hide="message == ''" class="alert alert-danger">
+                    {{message}}
+                </div>
             </form>
         </div>
 

@@ -29,5 +29,23 @@ namespace Repository
                 }
             }
         }
+
+        public void Save(User user)
+        {
+            var sessionFactory = SessionFactoryCreator.CreateSessionFactory();
+
+            using (var session = sessionFactory.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    //try
+                    {
+                        session.SaveOrUpdate(user);
+                        session.Transaction.Commit();
+                    }
+                }
+            }
+        }
+
     }
 }

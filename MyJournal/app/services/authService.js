@@ -9,15 +9,15 @@
             userName: ""
         };
 
-        //var _saveRegistration = function (registration) {
+        var register = function (registration) {
 
-        //    _logOut();
+            _logOut();
 
-        //    return $http.post(serviceBase + 'api/account/register', registration).then(function (response) {
-        //        return response;
-        //    });
+            return $http.post(serviceBase + 'api/account/register', registration).then(function (response) {
+                return response;
+            });
 
-        //};
+        };
 
         var _login = function (loginData) {
             console.log("servicebase = " + serviceBase);
@@ -105,7 +105,7 @@
 
         }
 
-        //authServiceFactory.saveRegistration = _saveRegistration;
+        authServiceFactory.register = register;
         authServiceFactory.login = _login;
         authServiceFactory.logOut = _logOut;
         authServiceFactory.sendResetPasswordEmail = sendResetPasswordEmail;

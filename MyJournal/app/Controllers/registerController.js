@@ -3,6 +3,9 @@
         function ($scope, $location, authService) {
 
             $scope.loginData = {
+                email: "",
+                firstName: "",
+                lastName: "",
                 userName: "",
                 password: ""
             };
@@ -11,13 +14,13 @@
 
             $scope.register = function () {
 
-                authService.login($scope.loginData).then(function (response) {
+                authService.register($scope.loginData).then(function (response) {
 
                     $location.path('/albums');
 
                 },
                     function (err) {
-                        $scope.message = err.data.error_description;
+                        $scope.message = err.data.Message;
                     });
             };
 

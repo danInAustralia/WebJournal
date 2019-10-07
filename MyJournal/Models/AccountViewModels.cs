@@ -68,6 +68,16 @@ namespace MyJournal.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+        [Required]
+        [Display(Name = "First Name")]
+        public string firstName { get; set; }
+        [Required]
+        [Display(Name = "Last Name")]
+        public string lastName { get; set; }
+
+        [Required]
+        [Display(Name = "Nick Name")]
+        public string nickName { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]

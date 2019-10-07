@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
 using MyJournal.ApiController;
 using MyJournal.Models;
@@ -16,6 +17,16 @@ namespace MyJournal.Providers
         public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
             context.Validated();
+        }
+
+        public override Task TokenEndpoint(OAuthTokenEndpointContext context)
+        {
+            foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)
+            {
+                context.AdditionalResponseParameters.Add(property.Key, property.Value);
+            }
+
+            return Task.FromResult<object>(null);
         }
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
@@ -40,7 +51,18 @@ namespace MyJournal.Providers
             identity.AddClaim(new Claim("role", "user"));
             identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
 
-            context.Validated(identity);
+            var userDetails = new AuthenticationProperties(new Dictionary<string, string>
+            {
+                {
+                    "FirstName", "sdfdf"
+                },
+                {
+                    "NickName", "Smith"
+                }
+            });
+
+            var ticket = new AuthenticationTicket(identity, userDetails);
+            context.Validated(ticket);
 
         }
     }

@@ -2,10 +2,13 @@
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Host.SystemWeb;
 using MyJournal.Models;
+using Repository;
+using ResourceModel;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
@@ -41,8 +44,9 @@ namespace MyJournal.ApiController
             {
                 if (_userManager == null)
                 {
+                    //var manager = HttpContext.Current.GetOwinContext().GetUserManager<UserManager<AspNetUser>>();
                     var abc = Request.GetOwinContext();
-                    ApplicationUserManager manager = abc.Get<ApplicationUserManager>();
+                    ApplicationUserManager manager = abc.GetUserManager<ApplicationUserManager>();
                 }
                 return _userManager ?? Request.GetOwinContext().Get<ApplicationUserManager>();
             }
@@ -54,26 +58,78 @@ namespace MyJournal.ApiController
 
         // POST: /Account/Register
         [HttpPost]
-        public async void Register(RegisterViewModel model)
+        public async Task<HttpResponseMessage> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                if (ModelState.IsValid)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                    var result = await UserManager.CreateAsync(user, model.Password);
+                    UserDetail userDetail = new UserDetail
+                    {
+                        NickName = model.nickName,
+                        FirstName = model.firstName,
+                        LastName = model.lastName
+                    };
+                    //creating another user to put the user details in, mixing nhibernate with EF not the best
 
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    User nHibernateUser = new User
+                    {
+                        ID = user.Id,
+                        UserName = user.UserName,
+                        UserDetail = userDetail
+                    };
+                    userDetail.User = nHibernateUser;
 
-                    //return RedirectToAction("Index", "Home");
+                    UserRepository userRepository = new UserRepository();
+                    userRepository.Save(nHibernateUser);
+
+                    if (result.Succeeded)
+                    {
+                        //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                        // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
+                        // Send an email with this link
+                        string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                        //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                        //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                        //return RedirectToAction("Index", "Home");
+                        return Request.CreateErrorResponse(HttpStatusCode.Accepted, String.Empty);
+                    }
+                    else
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "Unable to create User");
+                    }
+                    //AddErrors(result);
                 }
-                //AddErrors(result);
+                else
+                {
+                    string message = String.Empty;
+                    bool errorReported = false;
+                    foreach (var state in ModelState)
+                    {
+                        foreach (var error in state.Value.Errors)
+                        {
+                            message = error.ErrorMessage;
+                            errorReported = true;
+                            break;
+                        }
+                        if (errorReported)
+                        {
+                            break;
+                        }
+                    }
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, message);
+                }
             }
+
+            catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
 
             // If we got this far, something failed, redisplay form
             //return View(model);
@@ -155,7 +211,7 @@ namespace MyJournal.ApiController
             //        return ActionResultFactory.ValidationErrorsResult(ErrorList);
             //    }
             //}
-        }
+        //}
 
         //
         // GET: /Account/ConfirmEmail

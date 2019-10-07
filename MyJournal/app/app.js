@@ -1,4 +1,5 @@
-﻿var photoApp = angular.module("app", ["Journal.loginController",
+﻿var photoApp = angular.module("app", [ "Journal.registerController",
+    "Journal.loginController",
     "Journal.checkEmailController",
     "Journal.resetController",
     "LocalStorageModule",
