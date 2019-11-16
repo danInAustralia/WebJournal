@@ -3,6 +3,8 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
 using MyJournal.ApiController;
 using MyJournal.Models;
+using Repository;
+using ResourceModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,10 +35,16 @@ namespace MyJournal.Providers
         {
 
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
+            UserDetail userDetail = null;
 
             using (AccountRepository _repo = new AccountRepository())
             {
+                UserRepository repository = new UserRepository();
                 ApplicationUser user = await _repo.FindUser(context.UserName, context.Password);
+                if (user != null)
+                {
+                    userDetail = repository.GetUserDetails(user.Id);
+                }
 
                 if (user == null)
                 {
@@ -51,13 +59,14 @@ namespace MyJournal.Providers
             identity.AddClaim(new Claim("role", "user"));
             identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
 
+
             var userDetails = new AuthenticationProperties(new Dictionary<string, string>
             {
                 {
-                    "FirstName", "sdfdf"
+                    "FirstName", userDetail == null ? context.UserName : userDetail.FirstName
                 },
                 {
-                    "NickName", "Smith"
+                    "NickName", userDetail == null ? context.UserName : (userDetail.NickName == null ? userDetail.FirstName : userDetail.NickName)
                 }
             });
 

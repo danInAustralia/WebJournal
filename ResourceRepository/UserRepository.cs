@@ -1,4 +1,5 @@
 ﻿using NHibernate.Criterion;
+using NHibernate.Linq;
 using ResourceModel;
 using ResourceRepository;
 using System;
@@ -44,6 +45,16 @@ namespace Repository
                         session.Transaction.Commit();
                     }
                 }
+            }
+        }
+
+        public UserDetail GetUserDetails(string userID)
+        {
+            var sessionFactory = SessionFactoryCreator.CreateSessionFactory();
+            using (var session = sessionFactory.OpenSession())
+            {
+                var UserDetail = session.Query<UserDetail>().Where(x => x.ID == userID).FirstOrDefault();
+                return UserDetail;
             }
         }
 

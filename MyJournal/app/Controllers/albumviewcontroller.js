@@ -6,7 +6,7 @@
             $scope.CurrentPage = 1;
             $scope.selectedIndex = 0;
             $scope.selectedFileName = 0;
-            $scope.serviceBase = 'https://' + $location.host() + ':' + $location.port() + '/';
+            $scope.serviceBase = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/';
 
             $scope.onSelectionChanged = function (item) {
                 $scope.selectedFileName = item.OriginalFileName;

@@ -37,7 +37,7 @@
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>-->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li data-ng-hide="!authentication.isAuth"><a href="#">Welcome {{authentication.userName}}</a></li>
+                    <li data-ng-hide="!authentication.isAuth"><a href="#">Welcome {{authentication.nickName}}</a></li>
                     <li data-ng-hide="!authentication.isAuth"><a href="#/orders">My Subscription</a></li>
                     <li data-ng-hide="!authentication.isAuth"><a href="" data-ng-click="logOut()">Logout</a></li>
                     <li data-ng-hide="authentication.isAuth"> <a href="#/login">Login</a></li>

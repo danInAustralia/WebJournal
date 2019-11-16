@@ -1,12 +1,13 @@
 ﻿angular.module('Journal.authService', [])
     .factory('authService', ['$http', '$q', '$location', 'localStorageService', function ($http, $q, $location, localStorageService) {
 
-        var serviceBase = 'https://' + $location.host() + ':' + $location.port() + '/';//'https://localhost:44309/';
+        var serviceBase = $location.protocol()+'://' + $location.host() + ':' + $location.port() + '/';//'https://localhost:44309/';
         var authServiceFactory = {};
 
         var _authentication = {
             isAuth: false,
-            userName: ""
+            userName: "",
+            nickName: ""
         };
 
         var register = function (registration) {
@@ -33,6 +34,7 @@
 
                     _authentication.isAuth = true;
                     _authentication.userName = loginData.userName;
+                    _authentication.nickName = response.data.NickName;
 
                     deferred.resolve(response);
 
