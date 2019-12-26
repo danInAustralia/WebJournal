@@ -3,6 +3,7 @@
         function ($scope, $routeParams, albumProvider, $location, $http, localStorageService, $timeout) {
             $scope.Total =20;
             $scope.itemsPerPage = 20;
+            $scope.videoActive = false;
             $scope.pagination = {
                 currentPage: $routeParams.page,
                 itemsPerPage: 20,
@@ -148,6 +149,7 @@
 
             $scope.isVideo = function (galleryItem) {
                 var isVideo = $scope.getResourceType(galleryItem) == 'av';
+                galleryItem.videoActive = isVideo;
                 return isVideo;
             }
 

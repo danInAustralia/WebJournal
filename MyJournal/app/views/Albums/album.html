@@ -89,21 +89,21 @@
                 </div>
 
                 <div id="media_control">
-                    <div id="play"></div>
-                    <div id="pause"></div>
-                    <div id="progress_bg"></div>
-                    <div id="progress"></div>
-                    <div id="progress_indicator"></div>
-                    <div id="fullscreen_expand"></div>
-                    <div id="fullscreen_collapse"></div>
+                    <div ng-show="selectedResource.videoActive" id="play"></div>
+                    <div ng-show="selectedResource.videoActive" id="pause"></div>
+                    <div ng-show="selectedResource.videoActive" id="progress_bg"></div>
+                    <div ng-show="selectedResource.videoActive" id="progress"></div>
+                    <div ng-show="selectedResource.videoActive" id="progress_indicator"></div>
+                    <div ng-show="selectedResource.videoActive" id="fullscreen_expand"></div>
+                    <div ng-show="selectedResource.videoActive" id="fullscreen_collapse"></div>
                     <google-cast-launcher id="castbutton"></google-cast-launcher>
-                    <div id="audio_bg"></div>
-                    <div id="audio_bg_track"></div>
-                    <div id="audio_indicator"></div>
-                    <div id="audio_bg_level"></div>
-                    <div id="audio_on"></div>
-                    <div id="audio_off"></div>
-                    <div id="duration">00:00:00</div>
+                    <div ng-show="videoActive" id="audio_bg"></div>
+                    <div ng-show="videoActive" id="audio_bg_track"></div>
+                    <div ng-show="videoActive" id="audio_indicator"></div>
+                    <div ng-show="videoActive" id="audio_bg_level"></div>
+                    <div ng-show="videoActive" id="audio_on"></div>
+                    <div ng-show="videoActive" id="audio_off"></div>
+                    <div ng-show="videoActive" id="duration">00:00:00</div>
                 </div>
 
                 <div id="media_info">
