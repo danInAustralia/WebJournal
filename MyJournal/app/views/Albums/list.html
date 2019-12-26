@@ -44,7 +44,7 @@
                     <tbody>
                         <tr ng-repeat="album in Albums.Albums | filter: { searchFor }">
                             <td>
-                                <a href="/#/album/{{album.ID}}">{{ album.Name }}</a>
+                                <a href="/#/album/{{album.ID}}/1">{{ album.Name }}</a>
                             </td>
                             <td>
                                 <input type="date" class="form-control" placeholder="AssignedDate" ng-model="album.AlbumDate" />

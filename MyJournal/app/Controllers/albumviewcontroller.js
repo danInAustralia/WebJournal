@@ -1,9 +1,14 @@
 ﻿angular.module('Journal.AlbumViewController', [])
     .controller('AlbumViewController', ['$scope', '$routeParams', 'albumProvider', '$location', '$http', 'localStorageService', '$timeout',
         function ($scope, $routeParams, albumProvider, $location, $http, localStorageService, $timeout) {
-            $scope.Total = 0;
+            $scope.Total =20;
             $scope.itemsPerPage = 20;
-            $scope.CurrentPage = 1;
+            $scope.pagination = {
+                currentPage: $routeParams.page,
+                itemsPerPage: 20,
+                totalItems: null
+            };
+
             $scope.selectedIndex = 0;
             $scope.selectedFileName = 0;
             $scope.serviceBase = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/';
@@ -24,16 +29,17 @@
                 } else {
                     $scope.album = album;
                     //update view resources
-                    albumProvider.getAlbumResources($routeParams.id, $scope.CurrentPage, function (err, resources) {
+                    albumProvider.getAlbumResources($routeParams.id, $scope.pagination.currentPage, function (err, resources) {
                         $scope.resources = resources.Resources;
-                        $scope.Total = resources.Total;
+                        $scope.pagination.totalItems = resources.Total;
                         $scope.itemsPerPage = 20;
-                        $scope.CurrentPage = 1;
 
                         $scope.galleryOptions = {
                             dataSource: $scope.resources,
-                            height: 720,
+                            height: "100%",
+                            position: "center",
                             width: "100%",
+                            stretchImages: false,
                             loop: true,
                             showIndicator: false,
                             showNavButtons: true,
@@ -105,18 +111,19 @@
 
         }
 
-        $scope.pageChanged = function () {
-            albumProvider.getAlbumResources($scope.album.ID, $scope.CurrentPage, function (err, resources) {
-                $scope.resources = resources.Resources;
-                $scope.galleryOptions.dataSource = $scope.resources;
-                $scope.Total = resources.Total;
-            });
+            $scope.pageChanged = function () {
+                $location.url("/album/"+$routeParams.id + "/" + $scope.pagination.currentPage);
+            //albumProvider.getAlbumResources($scope.album.ID, $scope.CurrentPage, function (err, resources) {
+            //    $scope.resources = resources.Resources;
+            //    //$scope.galleryOptions.dataSource = $scope.resources;
+            //    $scope.Total = resources.Total;
+            //});
 
         };
 
         $scope.popupOptions = {
-            width: 1100,
-            height: 900,
+            width: "85%",
+            height: "85%",
             showTitle: true,
             title: "Information",
             dragEnabled: false,
@@ -303,83 +310,86 @@
                     var localPlayer = null;
                     var localCastPlayer = this;
                     $timeout(function () {
+                        //for video only
                         localPlayer = document.getElementById('embeddedPlayer');
-                        //console.log(objstatic);
-                        localPlayer.addEventListener(
-                            'loadeddata', localCastPlayer.onMediaLoadedLocally.bind(this));
+                        if (localPlayer) {
+                            //console.log(objstatic);
+                            localPlayer.addEventListener(
+                                'loadeddata', localCastPlayer.onMediaLoadedLocally.bind(this));
 
-                        // This object will implement PlayerHandler callbacks with localPlayer
-                        var playerTarget = {};
+                            // This object will implement PlayerHandler callbacks with localPlayer
+                            var playerTarget = {};
 
-                        playerTarget.play = function () {
-                            localPlayer.play();
+                            playerTarget.play = function () {
+                                localPlayer.play();
 
-                            //var vi = document.getElementById('video_image');
-                            //vi.style.display = 'none';
-                            localPlayer.style.display = 'block';
-                        };
+                                //var vi = document.getElementById('video_image');
+                                //vi.style.display = 'none';
+                                localPlayer.style.display = 'block';
+                            };
 
-                        playerTarget.pause = function () {
-                            localPlayer.pause();
-                        };
+                            playerTarget.pause = function () {
+                                localPlayer.pause();
+                            };
 
-                        playerTarget.stop = function () {
-                            localPlayer.stop();
-                        };
+                            playerTarget.stop = function () {
+                                localPlayer.stop();
+                            };
 
-                        //dont think this will ever get called as it's already set
-                        playerTarget.load = function (mediaIndex) {
-                            localPlayer.src =
-                                "/api/Resources/Get/" + $scope.selectedResource.Md5 + "?access_token=" + $scope.token;//this.mediaContents[mediaIndex]['sources'][0];
-                            localPlayer.load();
-                        }.bind(this);
+                            //dont think this will ever get called as it's already set
+                            playerTarget.load = function (mediaIndex) {
+                                localPlayer.src =
+                                    "/api/Resources/Get/" + $scope.selectedResource.Md5 + "?access_token=" + $scope.token;//this.mediaContents[mediaIndex]['sources'][0];
+                                localPlayer.load();
+                            }.bind(this);
 
-                        playerTarget.getCurrentMediaTime = function () {
-                            return localPlayer.currentTime;
-                        };
+                            playerTarget.getCurrentMediaTime = function () {
+                                return localPlayer.currentTime;
+                            };
 
-                        playerTarget.getMediaDuration = function () {
-                            return localPlayer.duration;
-                        };
+                            playerTarget.getMediaDuration = function () {
+                                return localPlayer.duration;
+                            };
 
-                        playerTarget.updateDisplayMessage = function () {
-                            document.getElementById('playerstate').style.display = 'none';
-                            document.getElementById('playerstatebg').style.display = 'none';
-                            document.getElementById('video_image_overlay').style.display = 'none';
-                        };
+                            playerTarget.updateDisplayMessage = function () {
+                                document.getElementById('playerstate').style.display = 'none';
+                                document.getElementById('playerstatebg').style.display = 'none';
+                                document.getElementById('video_image_overlay').style.display = 'none';
+                            };
 
-                        playerTarget.setVolume = function (volumeSliderPosition) {
-                            localPlayer.volume = volumeSliderPosition < FULL_VOLUME_HEIGHT ?
-                                volumeSliderPosition / FULL_VOLUME_HEIGHT : 1;
-                            var p = document.getElementById('audio_bg_level');
-                            p.style.height = volumeSliderPosition + 'px';
-                            p.style.marginTop = -volumeSliderPosition + 'px';
-                        };
+                            playerTarget.setVolume = function (volumeSliderPosition) {
+                                localPlayer.volume = volumeSliderPosition < FULL_VOLUME_HEIGHT ?
+                                    volumeSliderPosition / FULL_VOLUME_HEIGHT : 1;
+                                var p = document.getElementById('audio_bg_level');
+                                p.style.height = volumeSliderPosition + 'px';
+                                p.style.marginTop = -volumeSliderPosition + 'px';
+                            };
 
-                        playerTarget.mute = function () {
-                            localPlayer.muted = true;
-                        };
+                            playerTarget.mute = function () {
+                                localPlayer.muted = true;
+                            };
 
-                        playerTarget.unMute = function () {
-                            localPlayer.muted = false;
-                        };
+                            playerTarget.unMute = function () {
+                                localPlayer.muted = false;
+                            };
 
-                        playerTarget.isMuted = function () {
-                            return localPlayer.muted;
-                        };
+                            playerTarget.isMuted = function () {
+                                return localPlayer.muted;
+                            };
 
-                        playerTarget.seekTo = function (time) {
-                            localPlayer.currentTime = time;
-                        };
+                            playerTarget.seekTo = function (time) {
+                                localPlayer.currentTime = time;
+                            };
 
-                        $scope.castPlayer.playerHandler.setTarget(playerTarget);
+                            $scope.castPlayer.playerHandler.setTarget(playerTarget);
 
-                        $scope.castPlayer.playerHandler.setVolume(DEFAULT_VOLUME * FULL_VOLUME_HEIGHT);
+                            $scope.castPlayer.playerHandler.setVolume(DEFAULT_VOLUME * FULL_VOLUME_HEIGHT);
 
-                        $scope.castPlayer.showFullscreenButton();
+                            $scope.castPlayer.showFullscreenButton();
 
-                        if ($scope.castPlayer.currentMediaTime > 0) {
-                            $scope.castPlayer.playerHandler.play();
+                            if ($scope.castPlayer.currentMediaTime > 0) {
+                                $scope.castPlayer.playerHandler.play();
+                            }
                         }
                     }, 0);
                     //var localPlayer = document.getElementById('embeddedPlayer');

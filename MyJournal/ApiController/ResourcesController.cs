@@ -127,6 +127,102 @@ namespace MyJournal.ApiController
 
         }
 
+        [Authorize]
+        public async Task<HttpResponseMessage> GetMedia(string id)
+        {
+            bool isPartial = false;
+
+            UserRepository ur = new UserRepository();
+            string username = User.Identity.Name;
+            User user = ur.Get(username);
+
+            Repository.ResourceRepository repository = new Repository.ResourceRepository();
+            DigitalResource resource = repository.Get(id, user);
+
+            if (resource.OriginalFileName.ToLower().Contains("jpg") || resource.OriginalFileName.ToLower().Contains("mp4"))
+            {
+                //await stream.CopyToAsync(stream2,);
+                // Create a client
+                AmazonS3Client client = new AmazonS3Client();
+
+                long from = 0;
+                long to = 0;
+
+                GetObjectRequest request = null;
+                if (Request.Headers.Range != null)
+                {
+                    isPartial = true;
+                    //If the last-byte-pos value is absent, or if the value is greater than or equal to the current length of the entity-body, 
+                    //last -byte-pos is taken to be equal to one less than the current length of the entity- body in bytes.
+                    //*-The final 500 bytes(byte offsets 9500 - 9999, inclusive):
+                    //    bytes = -500
+                    //  - Or bytes = 9500 -
+                    if (Request.Headers.Range.Ranges.First().From == null)
+                    {
+                        from = (resource.Size - 1) - (long)Request.Headers.Range.Ranges.First().To;
+                    }
+                    else //From byte is specified
+                    {
+                        from = (long)Request.Headers.Range.Ranges.First().From;
+                    }
+
+                    to = resource.Size - 1;
+                    if (Request.Headers.Range.Ranges.First().To != null)
+                    {
+                        to = (long)Request.Headers.Range.Ranges.First().To;
+                    }
+                    else//Chrome often sends out a 0- request. Instead of passing back a massive file, just pass back the first 500 bytes
+                    {
+                        if (from == 0)
+                        {
+                            to = 499;
+                        }
+                    }
+                    request = new GetObjectRequest
+                    {
+                        BucketName = "piccoli",
+                        Key = id,
+                        ByteRange = new ByteRange(from, to)
+                    };
+                }
+                else
+                {
+                    request = new GetObjectRequest
+                    {
+                        BucketName = "piccoli",
+                        Key = id
+                    };
+                }
+                // Issue request and remember to dispose of the response
+                //using 
+                GetObjectResponse response = client.GetObject(request);
+                HttpStatusCode status = isPartial ? HttpStatusCode.PartialContent : HttpStatusCode.OK;
+                HttpResponseMessage result = new HttpResponseMessage(status);
+
+                result.Content = new StreamContent(response.ResponseStream);
+                string contentType = response.Headers["Content-Type"];
+                result.Content.Headers.ContentLength = resource.Size;
+                if (isPartial)
+                {
+                    result.Content.Headers.ContentLength = to - from + 1;//resource.Size;
+                    result.Content.Headers.ContentRange = new ContentRangeHeaderValue(from, to, resource.Size);
+                }
+                result.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue(contentType);//contentType);
+                return result;
+            }
+            else
+            {
+                HttpResponseMessage result = new HttpResponseMessage(HttpStatusCode.OK);
+                MemoryStream memoryStream = TextToImage(1280, 720, "Not able to render "+ resource.OriginalFileName);
+                result.Content = new StreamContent(memoryStream);
+                result.Content.Headers.ContentType =
+                    new MediaTypeHeaderValue("application/octet-stream");
+                return result;
+            }
+
+        }
+
         /// <summary>
         /// if it's an image, then resize it as necessary.
         /// if it's a video, then provide a frame representation of the video
@@ -198,33 +294,7 @@ namespace MyJournal.ApiController
             //}
             else
             {
-                //create an image as a placeholder for the resource.
-                Image placeHolder = new Bitmap(200, 120, PixelFormat.Format24bppRgb);
-                Graphics gphx = Graphics.FromImage(placeHolder);
-
-                // Create a font
-                Font fontWatermark = new Font("Verdana", 8, FontStyle.Italic);
-
-                // Indicate that the text should be 
-                // center aligned both vertically
-                // and horizontally...
-                StringFormat stringFormat = new StringFormat();
-                stringFormat.Alignment = StringAlignment.Center;
-                stringFormat.LineAlignment = StringAlignment.Center;
-
-                // Add the watermark...
-                gphx.DrawString("Non image resource",
-                               fontWatermark, Brushes.Beige,
-                               new Rectangle(10, 10, 200 - 10,
-                                 120 - 10),
-                               stringFormat);
-
-
-                MemoryStream memoryStream = new MemoryStream();
-                placeHolder.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-                memoryStream.Position = 0;
-
-                gphx.Dispose();
+                MemoryStream memoryStream = TextToImage(200,120, "Non image resource");
                 result.Content = new StreamContent(memoryStream);
                 result.Content.Headers.ContentType =
                     new MediaTypeHeaderValue("application/octet-stream");
@@ -232,6 +302,38 @@ namespace MyJournal.ApiController
 
             return result;
 
+        }
+
+        private static MemoryStream TextToImage(int width, int height, string text)
+        {
+            //create an image as a placeholder for the resource.
+            Image placeHolder = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+            Graphics gphx = Graphics.FromImage(placeHolder);
+
+            // Create a font
+            Font fontWatermark = new Font("Verdana", 18, FontStyle.Italic);
+
+            // Indicate that the text should be 
+            // center aligned both vertically
+            // and horizontally...
+            StringFormat stringFormat = new StringFormat();
+            stringFormat.Alignment = StringAlignment.Center;
+            stringFormat.LineAlignment = StringAlignment.Center;
+
+            // Add the watermark...
+            gphx.DrawString(text,
+                           fontWatermark, Brushes.Beige,
+                           new Rectangle(10, 10, width - 10,
+                             height - 10),
+                           stringFormat);
+
+
+            MemoryStream memoryStream = new MemoryStream();
+            placeHolder.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+            memoryStream.Position = 0;
+
+            gphx.Dispose();
+            return memoryStream;
         }
 
         /// <summary>

@@ -63,7 +63,7 @@ photoApp.config(["$routeProvider", function ($routeProvider) {
         controller: 'AlbumListController'
     });
 
-    $routeProvider.when('/album/:id/', {
+    $routeProvider.when('/album/:id/:page', {
         templateUrl: '/app/views/Albums/album.html',
         controller: 'AlbumViewController'
     });
