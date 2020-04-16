@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Album.cs" />
+    <Compile Include="AlbumResource.cs" />
     <Compile Include="ImageResource.cs" />
     <Compile Include="MimeTypeHelper.cs" />
     <Compile Include="ReferenceService.cs" />

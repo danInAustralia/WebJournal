@@ -19,7 +19,7 @@ namespace ResourceModel
         public virtual IList<User> Owners { get; set; }
         //public virtual User Owner { get; set; }
         public virtual long Size { get; set; }
-        public virtual IEnumerable<Album> Albums { get; set; }
+        //public virtual IEnumerable<Album> Albums { get; set; }
 
         public virtual void AddTag(Tag tag)
         {

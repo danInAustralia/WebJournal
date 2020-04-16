@@ -77,6 +77,7 @@
   <ItemGroup>
     <Compile Include="IResourceRepository.cs" />
     <Compile Include="Mapping\AlbumMap.cs" />
+    <Compile Include="Mapping\AlbumResourceMap.cs" />
     <Compile Include="Mapping\DigitalResourceMap.cs" />
     <Compile Include="Mapping\ResourceTypeMap.cs" />
     <Compile Include="Mapping\TagMap.cs" />

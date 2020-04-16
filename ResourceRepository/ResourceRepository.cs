@@ -91,6 +91,65 @@ namespace Repository
             return album;
         }
 
+        /// <summary>
+        /// get the album resource from the database if it exists. If it does not exist,
+        /// get the album and the resource and put them into a new AlbumResource
+        /// </summary>
+        /// <param name="albumID"></param>
+        /// <param name="resourceGUID"></param>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        public AlbumResource GetOrCreateAlbumResource(int albumID, string resourceGUID, string userName)
+        {
+            AlbumResource albumResource = null;
+            var sessionFactory = SessionFactoryCreator.CreateSessionFactory();
+
+            using (var session = sessionFactory.OpenSession())
+            {
+                using (session.BeginTransaction())
+                {
+                    albumResource = session.QueryOver<AlbumResource>()
+                        .Where(x => x.Album.ID == albumID && x.Resource.Md5 == resourceGUID)
+                        .List().FirstOrDefault();
+
+                    if (albumResource == null)
+                    {
+                        Album album = session.QueryOver<Album>()
+                                    .Where(x => x.ID == albumID)
+                                    .JoinQueryOver(x => x.Owner)
+                                    .Where(x => x.UserName == userName)
+                                    .List().FirstOrDefault();
+                        DigitalResource resource = Get(resourceGUID, userName);
+
+                        albumResource = new AlbumResource
+                        {
+                            Album = album,
+                            Resource = resource
+                        };
+                    }
+
+                }
+            }
+            return albumResource;
+        }
+
+        public void SaveAlbumResource(ResourceModel.AlbumResource resource)
+        {
+            var sessionFactory = SessionFactoryCreator.CreateSessionFactory();
+
+            using (var session = sessionFactory.OpenSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    //try
+                    {
+                        session.SaveOrUpdate(resource);
+                        session.Transaction.Commit();
+                    }
+                }
+            }
+        }
+
         public bool Exists(string md5)
         {
             DigitalResource resource = null;// list = new List<Resource>();
@@ -126,16 +185,53 @@ namespace Repository
             {
                 using (session.BeginTransaction())
                 {
+                    List<string> albumResourceIDs = session.Query<AlbumResource>().Select(x => x.Resource.Md5).ToList();
                     //session.CreateCriteria(typeof(DigitalResource)).ToList();
-                    resources = (from res in session.Query<DigitalResource>()
-                                where res.Owners.Any(x => userName == x.UserName)
-                                && res.Albums.Count() == 0
-                                select res).ToList();
+                    resources = session.Query<DigitalResource>()
+                                    .Where(x => !x.Md5.IsIn(albumResourceIDs)).ToList();
+                        
+                        //(from res in session.Query<DigitalResource>()
+                        //        where res.Owners.Any(x => userName == x.UserName)
+                        //        && (from albumResource in session.Query<AlbumResource> )
+                        //        select res).ToList();
 
                 }
             }
 
             return resources;
+        }
+
+        /// <summary>
+        /// Get the specified file. This is restricted by user as files can be confidential
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public DigitalResource Get(string id, string userName)
+        {
+            DigitalResource resource;// list = new List<Resource>();
+
+            var sessionFactory = SessionFactoryCreator.CreateSessionFactory();
+
+            using (var session = sessionFactory.OpenSession())
+            {
+                using (session.BeginTransaction())
+                {
+                    //session.CreateCriteria(typeof(DigitalResource)).ToList();
+                    resource = (from res in session.Query<DigitalResource>()
+                                where id == res.Md5 && res.Owners.Any(x => userName == x.UserName)
+                                select res).FirstOrDefault();
+
+                    if (resource != null)
+                    {
+                        IAmazonS3 s3Client = new AmazonS3Client();
+                        long size = s3Client.GetObjectMetadata("piccoli", id).ContentLength;
+                        resource.Size = size;
+                    }
+                }
+            }
+
+            return resource;
         }
 
         /// <summary>

@@ -29,10 +29,10 @@ namespace Repository.Mapping
                 .ParentKeyColumn("ResourceID")
                 .ChildKeyColumn("OwnerID")
                 .Not.LazyLoad();
-            HasManyToMany<ResourceModel.Album>(x => x.Albums).Table("Album_X_Resource")
-                .ParentKeyColumn("ResourceID")
-                .ChildKeyColumn("AlbumID")
-                .Not.LazyLoad();
+            //HasManyToMany<ResourceModel.Album>(x => x.Albums).Table("Album_X_Resource")
+            //    .ParentKeyColumn("ResourceID")
+            //    .ChildKeyColumn("AlbumID")
+            //    .Not.LazyLoad();
         }
     }
 }

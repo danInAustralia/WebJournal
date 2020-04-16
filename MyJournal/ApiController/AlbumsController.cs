@@ -131,30 +131,23 @@ namespace MyJournal.ApiControllers
             //throw new Exception("forced error");
             Repository.ResourceRepository rr = new Repository.ResourceRepository();
 
-            UserRepository ur = new UserRepository();
-            string username = User.Identity.Name;
-            User user = ur.Get(username);
-            DigitalResource myResource = rr.Get(resourceID, user);
+            AlbumResource albumResource = rr.GetOrCreateAlbumResource(albumID, resourceID, User.Identity.Name);
+
             //DigitalResource resource = null;
-            if (myResource != null)
+            if (albumResource.Album != null && albumResource.Resource != null)
             {
-                    String userName = this.User.Identity.Name;
-
-                    Repository.ResourceRepository repository = new Repository.ResourceRepository();
-
-                    Album album = repository.GetAlbum(albumID, userName);
-                    if (album == null)
+                if(albumResource.ID == 0)//needs to be saved to the database
+                {
+                    if (albumResource.IsValid)
                     {
-                        throw new Exception("Cannot find " + albumID + ". No album of this name has been created by you or shared with you");
+                        rr.SaveAlbumResource(albumResource);
                     }
-                    album.AddResource(myResource);
-                    repository.SaveAlbum(album);
-                
+                }
             }
             else
             {
                 success = false;
-                throw new System.Exception("No album specified or resource not defined");
+                throw new System.Exception("Unable to add resource to Album. Check that you own both resource and album and that they exist");
             }
 
             return true;
